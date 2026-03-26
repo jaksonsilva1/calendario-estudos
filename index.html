@@ -2,10 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
   <title>Calendário de Estudos GMM • Claro/Escuro + Import/Export</title>
   <style>
-    /* (mesmo CSS das versões anteriores, inalterado) */
     :root {
       --bg: #f7fafc;
       --card: #ffffff;
@@ -44,17 +43,21 @@
       --delete-btn-hover: #7f1a1a;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: var(--bg);
       margin: 0;
-      padding: 24px;
+      padding: 16px;
       color: var(--text);
       transition: background 0.2s, color 0.2s;
     }
 
     .wrap {
-      max-width: 980px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -64,17 +67,17 @@
       justify-content: space-between;
       margin-bottom: 18px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
 
     h1 {
-      font-size: 20px;
+      font-size: 18px;
       margin: 0;
     }
 
     .controls {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -83,24 +86,25 @@
       background: var(--accent, #0f9d58);
       color: #fff;
       border: 0;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
       transition: background 0.1s;
+      font-size: 13px;
     }
 
     .small {
       background: var(--btn-secondary-bg);
       color: var(--btn-secondary-text);
       border: 1px solid var(--btn-secondary-border);
-      padding: 8px 12px;
+      padding: 6px 10px;
     }
 
     .calendar {
       background: var(--card);
-      border-radius: 12px;
-      padding: 18px;
+      border-radius: 16px;
+      padding: 16px;
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
       transition: background 0.2s;
     }
@@ -108,7 +112,7 @@
     .weekdays {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 10px;
     }
 
@@ -116,59 +120,68 @@
       font-size: 12px;
       color: var(--muted);
       text-align: center;
-      font-weight: 500;
+      font-weight: 600;
+      padding: 6px 0;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 6px;
     }
 
     .cell {
-      min-height: 90px;
-      border-radius: 8px;
+      aspect-ratio: 1 / 1;
+      min-height: 0;
+      border-radius: 10px;
       padding: 8px;
       background: var(--cell-bg);
       border: 1px solid var(--border-light);
       position: relative;
       transition: all 0.1s;
+      display: flex;
+      flex-direction: column;
     }
 
     .cell:hover {
       background: var(--cell-hover);
       border-color: var(--accent, #0f9d58);
+      transform: scale(1.02);
     }
 
     .cell .date {
       position: absolute;
-      top: 8px;
+      top: 6px;
       left: 8px;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .events {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-top: 26px;
+      gap: 4px;
+      margin-top: 24px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: calc(100% - 28px);
     }
 
     .event {
       display: inline-block;
-      padding: 6px 10px;
-      border-radius: 14px;
+      padding: 4px 6px;
+      border-radius: 8px;
       background: var(--accent, #0f9d58);
       color: #fff;
-      font-size: 12px;
-      max-width: 95%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 10px;
+      max-width: 100%;
+      white-space: normal;
+      word-break: break-word;
       cursor: pointer;
       transition: transform 0.05s;
+      line-height: 1.2;
+      text-align: center;
     }
 
     .event:hover {
@@ -176,25 +189,23 @@
       filter: brightness(0.95);
     }
 
-    .event.small {
-      padding: 4px 8px;
-      font-size: 11px;
-    }
-
     .empty {
       opacity: 0.6;
-      font-size: 13px;
+      font-size: 11px;
       color: var(--muted);
       font-style: italic;
+      text-align: center;
     }
 
     .footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 12px;
+      margin-top: 16px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 11px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .modal-back {
@@ -205,20 +216,22 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      padding: 16px;
     }
 
     .modal {
       background: var(--modal-bg);
       padding: 20px;
       border-radius: 16px;
-      width: 380px;
+      width: 90%;
+      max-width: 380px;
       box-shadow: 0 20px 35px rgba(2, 6, 23, 0.4);
       transition: background 0.2s;
     }
 
     .modal h3 {
       margin: 0 0 12px 0;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       color: var(--text);
     }
 
@@ -231,7 +244,7 @@
 
     label {
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text);
     }
 
@@ -244,6 +257,7 @@
       background: var(--input-bg);
       color: var(--text);
       font-family: inherit;
+      font-size: 14px;
     }
 
     .modal-actions {
@@ -263,15 +277,107 @@
       background: var(--delete-btn-hover);
     }
 
-    @media (max-width: 720px) {
+    /* Responsividade */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      
+      .calendar {
+        padding: 12px;
+      }
+      
+      .weekday {
+        font-size: 11px;
+        padding: 4px 0;
+      }
+      
       .grid {
-        gap: 6px;
+        gap: 5px;
       }
+      
       .cell {
-        min-height: 80px;
+        padding: 6px;
       }
-      .controls button {
-        padding: 6px 10px;
+      
+      .cell .date {
+        font-size: 10px;
+        top: 5px;
+        left: 6px;
+      }
+      
+      .events {
+        margin-top: 22px;
+        gap: 3px;
+      }
+      
+      .event {
+        font-size: 9px;
+        padding: 3px 5px;
+      }
+      
+      .empty {
+        font-size: 10px;
+      }
+      
+      button {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        gap: 4px;
+      }
+      
+      .cell {
+        padding: 4px;
+      }
+      
+      .cell .date {
+        font-size: 9px;
+        top: 4px;
+        left: 5px;
+      }
+      
+      .events {
+        margin-top: 20px;
+        gap: 2px;
+      }
+      
+      .event {
+        font-size: 8px;
+        padding: 2px 4px;
+      }
+      
+      .empty {
+        font-size: 9px;
+      }
+      
+      .weekday {
+        font-size: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        gap: 3px;
+      }
+      
+      .cell .date {
+        font-size: 8px;
+        top: 3px;
+        left: 4px;
+      }
+      
+      .events {
+        margin-top: 18px;
+      }
+      
+      .event {
+        font-size: 7px;
+        padding: 2px 3px;
       }
     }
   </style>
@@ -286,8 +392,8 @@
       <div class="small" id="monthLabel"></div>
       <button id="next" title="Próximo mês">▶</button>
       <button id="today">📅 Hoje</button>
-      <button id="export">📤 Exportar JSON</button>
-      <button id="importBtn" class="small">📂 Importar JSON</button>
+      <button id="export">📤 Exportar</button>
+      <button id="importBtn" class="small">📂 Importar</button>
       <input type="file" id="importFile" accept=".json" style="display: none;" />
     </div>
   </header>
@@ -302,17 +408,17 @@
   </div>
 </div>
 
-<!-- Modal (mesmo) -->
+<!-- Modal -->
 <div class="modal-back" id="modalBack">
   <div class="modal" role="dialog" aria-modal="true">
     <h3 id="modalTitle">Adicionar Evento</h3>
     <div class="form-row">
       <label>📌 Título *</label>
-      <input id="evTitle" type="text" placeholder="Ex: Revisão de constitucional" autocomplete="off" />
+      <input id="evTitle" type="text" placeholder="Ex: DP - Teoria" autocomplete="off" />
     </div>
     <div class="form-row">
       <label>⏰ Horário (opcional)</label>
-      <input id="evTime" type="text" placeholder="Ex: 14:00 - 16:00" />
+      <input id="evTime" type="text" placeholder="Ex: 19:00-21:00" />
     </div>
     <div class="form-row">
       <label>🎨 Cor</label>
@@ -355,18 +461,17 @@
   let editingEventId = null;
 
   // ====================== TEMA ======================
-function initTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'light') {
-    document.body.classList.remove('dark');
-    themeToggle.textContent = '🌙 Modo escuro';
-  } else {
-    // Se não houver tema salvo ou for 'dark', usa escuro como padrão
-    document.body.classList.add('dark');
-    localStorage.setItem('theme', 'dark'); // opcional: salva como padrão
-    themeToggle.textContent = '☀️ Modo claro';
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.body.classList.remove('dark');
+      themeToggle.textContent = '🌙 Modo escuro';
+    } else {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = '☀️ Modo claro';
+    }
   }
-}
 
   function toggleTheme() {
     if (document.body.classList.contains('dark')) {
@@ -401,17 +506,15 @@ function initTheme() {
     const m = today.getMonth();
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
-    sample[key(2)] = [{ id: Date.now()+1, title: 'Processo penal', time: '', color: '#0f9d58' }];
-    sample[key(4)] = [{ id: Date.now()+2, title: 'ECI e direitos humanos', time: '', color: '#0f9d58' }];
-    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00-11:00', color: '#0f9d58' }];
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF/88 (II)', time: '', color: '#0f9d58' }];
-    sample[key(13)] = [{ id: Date.now()+5, title: 'Administração pública', time: '14:30', color: '#2563eb' }];
-    sample[key(15)] = [{ id: Date.now()+6, title: 'Proclamação', time: '', color: '#f59e0b' }];
-    sample[key(17)] = [{ id: Date.now()+7, title: 'Sistema de direitos Humanos', time: '', color: '#0f9d58' }];
-    sample[key(18)] = [{ id: Date.now()+8, title: 'Legis. Ambiental', time: '19:00', color: '#0f9d58' }];
-    sample[key(20)] = [{ id: Date.now()+9, title: 'Noções de finanças', time: '', color: '#ef4444' }];
-    sample[key(24)] = [{ id: Date.now()+10, title: 'Legis. Trabalho', time: '', color: '#0f9d58' }];
-    sample[key(26)] = [{ id: Date.now()+11, title: 'ProntoSoc', time: '08:00-10:00', color: '#0f9d58' }];
+    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria', time: '19:00', color: '#0f9d58' }];
+    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', color: '#2ecc71' }];
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', color: '#0f9d58' }];
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', color: '#27ae60' }];
+    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', color: '#229954' }];
+    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO', time: '', color: '#f59e0b' }];
+    sample[key(17)] = [{ id: Date.now()+7, title: 'DH - SIDH', time: '19:00', color: '#2ecc71' }];
+    sample[key(18)] = [{ id: Date.now()+8, title: 'AMBI - Lei 9.605', time: '19:00', color: '#0f9d58' }];
+    sample[key(20)] = [{ id: Date.now()+9, title: 'SIMULADO', time: '', color: '#ef4444' }];
     saveEvents(sample);
   }
 
@@ -463,13 +566,13 @@ function initTheme() {
       if (dayEvents.length === 0) {
         const hint = document.createElement('div');
         hint.className = 'empty';
-        hint.textContent = '+ adicionar';
+        hint.textContent = '+';
         eventsContainer.appendChild(hint);
       } else {
         dayEvents.forEach(ev => {
           const evDiv = document.createElement('div');
-          evDiv.className = 'event small';
-          evDiv.textContent = ev.time ? `${ev.time} • ${ev.title}` : ev.title;
+          evDiv.className = 'event';
+          evDiv.textContent = ev.time ? `${ev.time} ${ev.title}` : ev.title;
           evDiv.style.backgroundColor = ev.color;
           evDiv.title = `Editar: ${ev.title}`;
           evDiv.onclick = (e) => {
@@ -500,7 +603,7 @@ function initTheme() {
     }
 
     const allEvents = Object.values(loadEvents()).flat();
-    info.textContent = `📌 ${allEvents.length} evento(s) cadastrado(s)`;
+    info.textContent = `📌 ${allEvents.length} evento(s)`;
   }
 
   // ====================== MODAL ======================
@@ -600,16 +703,15 @@ function initTheme() {
     reader.onload = function(e) {
       try {
         const importedData = JSON.parse(e.target.result);
-        // Validação simples: deve ser um objeto
         if (typeof importedData === 'object' && importedData !== null) {
           saveEvents(importedData);
           render();
-          alert('✅ Importação concluída! Os eventos foram substituídos pelos do arquivo.');
+          alert('✅ Importação concluída!');
         } else {
           throw new Error('Formato inválido');
         }
       } catch (err) {
-        alert('❌ Arquivo inválido. Certifique-se de que é um JSON gerado pelo calendário.');
+        alert('❌ Arquivo inválido. Use um JSON gerado pelo calendário.');
       }
     };
     reader.readAsText(file);
@@ -622,7 +724,7 @@ function initTheme() {
     if (e.target.files.length > 0) {
       importFromJSON(e.target.files[0]);
     }
-    importFile.value = ''; // permite importar o mesmo arquivo novamente se necessário
+    importFile.value = '';
   });
 
   // ====================== EVENTOS DOS BOTÕES ======================
