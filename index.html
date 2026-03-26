@@ -1,0 +1,226 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calendário de Estudos</title>
+  <style>
+    :root{--bg:#f7fafc;--card:#fff;--accent:#0f9d58;--muted:#6b7280}
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:24px; color:#111}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .controls{display:flex;gap:8px;align-items:center}
+    button{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .small{background:#fff;color:#111;border:1px solid #e5e7eb;padding:8px 10px}
+    .calendar{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.06)}
+    .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:10px}
+    .weekday{font-size:12px;color:var(--muted);text-align:center}
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .cell{min-height:90px;border-radius:8px;padding:8px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #f1f5f9;position:relative}
+    .cell .date{position:absolute;top:8px;left:8px;font-size:12px;color:var(--muted)}
+    .events{display:flex;flex-direction:column;gap:6px;margin-top:26px}
+    .event{display:inline-block;padding:6px 10px;border-radius:14px;background:var(--accent);color:#fff;font-size:12px;max-width:95%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .event.small{padding:4px 8px;font-size:11px}
+    .empty{opacity:.5;font-size:13px;color:var(--muted)}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted)}
+
+    /* modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;align-items:center;justify-content:center}
+    .modal{background:#fff;padding:16px;border-radius:10px;width:360px;box-shadow:0 12px 40px rgba(2,6,23,.3)}
+    .modal h3{margin:0 0 8px 0}
+    .form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+    input[type=text], select, textarea{padding:8px;border-radius:8px;border:1px solid #e5e7eb}
+    .modal-actions{display:flex;justify-content:flex-end;gap:8px}
+
+    @media (max-width:720px){.grid{gap:6px}.cell{min-height:80px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Calendário de Estudos</h1>
+      <div class="controls">
+        <button id="prev">◀</button>
+        <div class="small" id="monthLabel"></div>
+        <button id="next">▶</button>
+        <button id="today">Hoje</button>
+        <button id="export">Exportar JSON</button>
+      </div>
+    </header>
+
+    <div class="calendar">
+      <div class="weekdays" id="weekdays"></div>
+      <div class="grid" id="grid"></div>
+      <div class="footer">
+        <div>Dica: clique em um dia para adicionar evento.</div>
+        <div id="info"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Adicionar / Editar Evento</h3>
+      <div class="form-row">
+        <label>Título</label>
+        <input id="evTitle" type="text" placeholder="Ex: Processo penal" />
+      </div>
+      <div class="form-row">
+        <label>Horário (opcional)</label>
+        <input id="evTime" type="text" placeholder="Ex: 16:00 - 17:00" />
+      </div>
+      <div class="form-row">
+        <label>Cor</label>
+        <select id="evColor">
+          <option value="#0f9d58">Verde (padrão)</option>
+          <option value="#ef4444">Vermelho</option>
+          <option value="#2563eb">Azul</option>
+          <option value="#f59e0b">Amarelo</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="deleteBtn" class="small">Excluir</button>
+        <button id="cancelBtn" class="small">Cancelar</button>
+        <button id="saveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // calendário simples com armazenamento local
+    const weekdays = ['DOM.','SEG.','TER.','QUA.','QUI.','SEX.','SÁB.'];
+    const monthLabel = document.getElementById('monthLabel');
+    const grid = document.getElementById('grid');
+    const weekdaysRow = document.getElementById('weekdays');
+    const modalBack = document.getElementById('modalBack');
+    const evTitle = document.getElementById('evTitle');
+    const evTime = document.getElementById('evTime');
+    const evColor = document.getElementById('evColor');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const info = document.getElementById('info');
+
+    let current = new Date();
+    let selectedDate = null;
+    let editingId = null;
+
+    // draw weekdays
+    weekdays.forEach(d=>{const el=document.createElement('div');el.className='weekday';el.textContent=d;weekdaysRow.appendChild(el)})
+
+    function formatMonthYear(d){return d.toLocaleString('pt-BR',{month:'long', year:'numeric'})}
+
+    function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(), 1)}
+    function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1, 0)}
+
+    function loadEvents(){
+      try{return JSON.parse(localStorage.getItem('calEvents')||'{}')}
+      catch(e){return {}}
+    }
+    function saveEvents(ev){localStorage.setItem('calEvents', JSON.stringify(ev))}
+
+    // sample events (only added if storage empty)
+    if(!localStorage.getItem('calEvents')){
+      const sample = {};
+      const y=current.getFullYear(), m=current.getMonth();
+      function key(day){return `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`}
+      sample[key(2)] = [{id:1,title:'Processo penal',time:'',color:'#0f9d58'}];
+      sample[key(4)] = [{id:2,title:'ECI e direitos humanos',time:'',color:'#0f9d58'}];
+      sample[key(6)] = [{id:3,title:'Lei 812',time:'',color:'#0f9d58'}];
+      sample[key(10)] = [{id:4,title:'CF/88 (II)',time:'',color:'#0f9d58'}];
+      sample[key(13)] = [{id:5,title:'Administração pública',time:'',color:'#0f9d58'}];
+      sample[key(15)] = [{id:6,title:'Proclamação',time:'',color:'#0f9d58'}];
+      sample[key(17)] = [{id:7,title:'Sistema e direitos Humanos',time:'',color:'#0f9d58'}];
+      sample[key(18)] = [{id:8,title:'Legis. Ambien',time:'',color:'#0f9d58'}];
+      sample[key(20)] = [{id:9,title:'Noções de fir',time:'',color:'#0f9d58'}];
+      sample[key(24)] = [{id:10,title:'Legist. Ambien',time:'',color:'#0f9d58'}];
+      sample[key(26)] = [{id:11,title:'ProntoSoc',time:'',color:'#0f9d58'}];
+      localStorage.setItem('calEvents', JSON.stringify(sample))
+    }
+
+    function render(){
+      grid.innerHTML='';
+      monthLabel.textContent = formatMonthYear(current);
+      const first = startOfMonth(current);
+      const last = endOfMonth(current);
+      const startWeekday = first.getDay();
+      const totalDays = last.getDate();
+      const events = loadEvents();
+
+      // previous month's trailing cells
+      const prevDays = startWeekday;
+      const prevLast = new Date(current.getFullYear(), current.getMonth(), 0).getDate();
+      for(let i=0;i<prevDays;i++){
+        const day = prevLast - prevDays + 1 + i;
+        const cell = document.createElement('div');cell.className='cell';cell.style.opacity=.35;
+        const dlabel=document.createElement('div');dlabel.className='date';dlabel.textContent=day;cell.appendChild(dlabel);
+        grid.appendChild(cell)
+      }
+
+      // this month's days
+      for(let d=1; d<=totalDays; d++){
+        const cell = document.createElement('div');cell.className='cell';
+        const dlabel=document.createElement('div');dlabel.className='date';dlabel.textContent=d;cell.appendChild(dlabel);
+        const key = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const evs = events[key]||[];
+        const container = document.createElement('div');container.className='events';
+        if(evs.length===0){
+          const em = document.createElement('div');em.className='empty';em.textContent='Clique para adicionar';container.appendChild(em)
+        } else {
+          evs.forEach(ev=>{
+            const e = document.createElement('div');e.className='event small';e.textContent = ev.time? (ev.time+' • '+ev.title) : ev.title; e.style.background=ev.color; e.title = ev.title;
+            e.onclick = (evclick=>()=>{openModal(key, evclick.id)})(ev);
+            container.appendChild(e)
+          })
+        }
+        cell.appendChild(container);
+        cell.onclick = () => openModal(key);
+        grid.appendChild(cell)
+      }
+
+      // fill remaining cells to complete weeks (up to 42 cells)
+      const totalCells = grid.children.length; const toAdd = (7 - (totalCells % 7)) % 7;
+      for(let i=0;i<toAdd;i++){const cell = document.createElement('div');cell.className='cell';cell.style.opacity=.35;grid.appendChild(cell)}
+
+      info.textContent = Object.values(loadEvents()).flat().length + ' eventos salvos'
+    }
+
+    function openModal(dateKey, id=null){
+      selectedDate = dateKey; editingId = id; modalBack.style.display='flex';
+      const events = loadEvents()[dateKey]||[];
+      if(id){
+        const ev = events.find(x=>x.id===id);
+        evTitle.value = ev.title; evTime.value = ev.time; evColor.value = ev.color;
+        deleteBtn.style.display = 'inline-block';
+      } else { evTitle.value=''; evTime.value=''; evColor.value='#0f9d58'; deleteBtn.style.display='none' }
+    }
+    cancelBtn.onclick = ()=>{modalBack.style.display='none'}
+    modalBack.onclick = (e)=>{ if(e.target===modalBack) modalBack.style.display='none' }
+
+    saveBtn.onclick = ()=>{
+      const title = evTitle.value.trim(); if(!title){alert('Digite um título'); return}
+      const events = loadEvents(); const arr = events[selectedDate]||[];
+      if(editingId){
+        const ev = arr.find(x=>x.id===editingId); ev.title=title; ev.time=evTime.value; ev.color=evColor.value;
+      } else {
+        const nid = Date.now(); arr.push({id:nid,title, time:evTime.value, color:evColor.value});
+      }
+      events[selectedDate]=arr; saveEvents(events); modalBack.style.display='none'; render();
+    }
+
+    deleteBtn.onclick = ()=>{
+      if(!confirm('Excluir evento?')) return; const events = loadEvents(); const arr = events[selectedDate]||[]; const idx = arr.findIndex(x=>x.id===editingId); if(idx>-1) arr.splice(idx,1); events[selectedDate]=arr; saveEvents(events); modalBack.style.display='none'; render();
+    }
+
+    document.getElementById('prev').onclick = ()=>{current = new Date(current.getFullYear(), current.getMonth()-1, 1); render()}
+    document.getElementById('next').onclick = ()=>{current = new Date(current.getFullYear(), current.getMonth()+1, 1); render()}
+    document.getElementById('today').onclick = ()=>{current = new Date(); render()}
+    document.getElementById('export').onclick = ()=>{const data = localStorage.getItem('calEvents')||'{}'; const blob = new Blob([data],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='calendario_eventos.json'; a.click(); URL.revokeObjectURL(url)}
+
+    render();
+  </script>
+</body>
+</html>
