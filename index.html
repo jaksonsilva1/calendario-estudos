@@ -1,226 +1,670 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendário de Estudos</title>
+  <title>Calendário de Estudos • Claro/Escuro + Import/Export</title>
   <style>
-    :root{--bg:#f7fafc;--card:#fff;--accent:#0f9d58;--muted:#6b7280}
-    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:24px; color:#111}
-    .wrap{max-width:980px;margin:0 auto}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    h1{font-size:20px;margin:0}
-    .controls{display:flex;gap:8px;align-items:center}
-    button{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .small{background:#fff;color:#111;border:1px solid #e5e7eb;padding:8px 10px}
-    .calendar{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.06)}
-    .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:10px}
-    .weekday{font-size:12px;color:var(--muted);text-align:center}
-    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-    .cell{min-height:90px;border-radius:8px;padding:8px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #f1f5f9;position:relative}
-    .cell .date{position:absolute;top:8px;left:8px;font-size:12px;color:var(--muted)}
-    .events{display:flex;flex-direction:column;gap:6px;margin-top:26px}
-    .event{display:inline-block;padding:6px 10px;border-radius:14px;background:var(--accent);color:#fff;font-size:12px;max-width:95%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .event.small{padding:4px 8px;font-size:11px}
-    .empty{opacity:.5;font-size:13px;color:var(--muted)}
-    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted)}
+    /* (mesmo CSS das versões anteriores, inalterado) */
+    :root {
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #6b7280;
+      --border-light: #e5e7eb;
+      --cell-bg: linear-gradient(180deg, #fff, #fbfdff);
+      --cell-hover: #fefce8;
+      --modal-bg: #ffffff;
+      --input-bg: #ffffff;
+      --input-border: #e5e7eb;
+      --btn-secondary-bg: #ffffff;
+      --btn-secondary-border: #e5e7eb;
+      --btn-secondary-text: #111111;
+      --delete-btn-bg: #fee2e2;
+      --delete-btn-text: #b91c1c;
+      --delete-btn-hover: #fecaca;
+    }
 
-    /* modal */
-    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;align-items:center;justify-content:center}
-    .modal{background:#fff;padding:16px;border-radius:10px;width:360px;box-shadow:0 12px 40px rgba(2,6,23,.3)}
-    .modal h3{margin:0 0 8px 0}
-    .form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-    input[type=text], select, textarea{padding:8px;border-radius:8px;border:1px solid #e5e7eb}
-    .modal-actions{display:flex;justify-content:flex-end;gap:8px}
+    body.dark {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border-light: #334155;
+      --cell-bg: linear-gradient(180deg, #1e293b, #0f172a);
+      --cell-hover: #2d3a4f;
+      --modal-bg: #1e293b;
+      --input-bg: #0f172a;
+      --input-border: #334155;
+      --btn-secondary-bg: #334155;
+      --btn-secondary-border: #475569;
+      --btn-secondary-text: #e2e8f0;
+      --delete-btn-bg: #450a0a;
+      --delete-btn-text: #f87171;
+      --delete-btn-hover: #7f1a1a;
+    }
 
-    @media (max-width:720px){.grid{gap:6px}.cell{min-height:80px}}
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      margin: 0;
+      padding: 24px;
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--accent, #0f9d58);
+      color: #fff;
+      border: 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.1s;
+    }
+
+    .small {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border: 1px solid var(--btn-secondary-border);
+      padding: 8px 12px;
+    }
+
+    .calendar {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      transition: background 0.2s;
+    }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .weekday {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .cell {
+      min-height: 90px;
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--cell-bg);
+      border: 1px solid var(--border-light);
+      position: relative;
+      transition: all 0.1s;
+    }
+
+    .cell:hover {
+      background: var(--cell-hover);
+      border-color: var(--accent, #0f9d58);
+    }
+
+    .cell .date {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 26px;
+    }
+
+    .event {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: var(--accent, #0f9d58);
+      color: #fff;
+      font-size: 12px;
+      max-width: 95%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: transform 0.05s;
+    }
+
+    .event:hover {
+      transform: scale(0.98);
+      filter: brightness(0.95);
+    }
+
+    .event.small {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .empty {
+      opacity: 0.6;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--modal-bg);
+      padding: 20px;
+      border-radius: 16px;
+      width: 380px;
+      box-shadow: 0 20px 35px rgba(2, 6, 23, 0.4);
+      transition: background 0.2s;
+    }
+
+    .modal h3 {
+      margin: 0 0 12px 0;
+      font-size: 1.25rem;
+      color: var(--text);
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    #deleteBtn {
+      background: var(--delete-btn-bg);
+      color: var(--delete-btn-text);
+      border: 1px solid var(--delete-btn-text);
+    }
+
+    #deleteBtn:hover {
+      background: var(--delete-btn-hover);
+    }
+
+    @media (max-width: 720px) {
+      .grid {
+        gap: 6px;
+      }
+      .cell {
+        min-height: 80px;
+      }
+      .controls button {
+        padding: 6px 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Calendário de Estudos</h1>
-      <div class="controls">
-        <button id="prev">◀</button>
-        <div class="small" id="monthLabel"></div>
-        <button id="next">▶</button>
-        <button id="today">Hoje</button>
-        <button id="export">Exportar JSON</button>
-      </div>
-    </header>
+<div class="wrap">
+  <header>
+    <h1>📚 Calendário de Estudos</h1>
+    <div class="controls">
+      <button id="themeToggle" class="small">🌙 Modo escuro</button>
+      <button id="prev" title="Mês anterior">◀</button>
+      <div class="small" id="monthLabel"></div>
+      <button id="next" title="Próximo mês">▶</button>
+      <button id="today">📅 Hoje</button>
+      <button id="export">📤 Exportar JSON</button>
+      <button id="importBtn" class="small">📂 Importar JSON</button>
+      <input type="file" id="importFile" accept=".json" style="display: none;" />
+    </div>
+  </header>
 
-    <div class="calendar">
-      <div class="weekdays" id="weekdays"></div>
-      <div class="grid" id="grid"></div>
-      <div class="footer">
-        <div>Dica: clique em um dia para adicionar evento.</div>
-        <div id="info"></div>
-      </div>
+  <div class="calendar">
+    <div class="weekdays" id="weekdays"></div>
+    <div class="grid" id="grid"></div>
+    <div class="footer">
+      <div>💡 Clique no dia para adicionar / clique no evento para editar</div>
+      <div id="info"></div>
     </div>
   </div>
+</div>
 
-  <!-- modal -->
-  <div class="modal-back" id="modalBack">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h3>Adicionar / Editar Evento</h3>
-      <div class="form-row">
-        <label>Título</label>
-        <input id="evTitle" type="text" placeholder="Ex: Processo penal" />
-      </div>
-      <div class="form-row">
-        <label>Horário (opcional)</label>
-        <input id="evTime" type="text" placeholder="Ex: 16:00 - 17:00" />
-      </div>
-      <div class="form-row">
-        <label>Cor</label>
-        <select id="evColor">
-          <option value="#0f9d58">Verde (padrão)</option>
-          <option value="#ef4444">Vermelho</option>
-          <option value="#2563eb">Azul</option>
-          <option value="#f59e0b">Amarelo</option>
-        </select>
-      </div>
-      <div class="modal-actions">
-        <button id="deleteBtn" class="small">Excluir</button>
-        <button id="cancelBtn" class="small">Cancelar</button>
-        <button id="saveBtn">Salvar</button>
-      </div>
+<!-- Modal (mesmo) -->
+<div class="modal-back" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="modalTitle">Adicionar Evento</h3>
+    <div class="form-row">
+      <label>📌 Título *</label>
+      <input id="evTitle" type="text" placeholder="Ex: Revisão de constitucional" autocomplete="off" />
+    </div>
+    <div class="form-row">
+      <label>⏰ Horário (opcional)</label>
+      <input id="evTime" type="text" placeholder="Ex: 14:00 - 16:00" />
+    </div>
+    <div class="form-row">
+      <label>🎨 Cor</label>
+      <select id="evColor">
+        <option value="#0f9d58">Verde (padrão)</option>
+        <option value="#ef4444">Vermelho</option>
+        <option value="#2563eb">Azul</option>
+        <option value="#f59e0b">Amarelo</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button id="deleteBtn" class="small" style="display:none">🗑️ Excluir</button>
+      <button id="cancelBtn" class="small">Cancelar</button>
+      <button id="saveBtn">💾 Salvar</button>
     </div>
   </div>
+</div>
 
-  <script>
-    // calendário simples com armazenamento local
-    const weekdays = ['DOM.','SEG.','TER.','QUA.','QUI.','SEX.','SÁB.'];
-    const monthLabel = document.getElementById('monthLabel');
-    const grid = document.getElementById('grid');
-    const weekdaysRow = document.getElementById('weekdays');
-    const modalBack = document.getElementById('modalBack');
-    const evTitle = document.getElementById('evTitle');
-    const evTime = document.getElementById('evTime');
-    const evColor = document.getElementById('evColor');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const info = document.getElementById('info');
+<script>
+  // ====================== DOM elements ======================
+  const weekdays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+  const monthLabel = document.getElementById('monthLabel');
+  const grid = document.getElementById('grid');
+  const weekdaysRow = document.getElementById('weekdays');
+  const modalBack = document.getElementById('modalBack');
+  const modalTitle = document.getElementById('modalTitle');
+  const evTitle = document.getElementById('evTitle');
+  const evTime = document.getElementById('evTime');
+  const evColor = document.getElementById('evColor');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const deleteBtn = document.getElementById('deleteBtn');
+  const info = document.getElementById('info');
+  const themeToggle = document.getElementById('themeToggle');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
 
-    let current = new Date();
-    let selectedDate = null;
-    let editingId = null;
+  let currentDate = new Date();
+  let selectedDateKey = null;
+  let editingEventId = null;
 
-    // draw weekdays
-    weekdays.forEach(d=>{const el=document.createElement('div');el.className='weekday';el.textContent=d;weekdaysRow.appendChild(el)})
-
-    function formatMonthYear(d){return d.toLocaleString('pt-BR',{month:'long', year:'numeric'})}
-
-    function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(), 1)}
-    function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1, 0)}
-
-    function loadEvents(){
-      try{return JSON.parse(localStorage.getItem('calEvents')||'{}')}
-      catch(e){return {}}
+  // ====================== TEMA ======================
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      themeToggle.textContent = '☀️ Modo claro';
+    } else {
+      document.body.classList.remove('dark');
+      themeToggle.textContent = '🌙 Modo escuro';
     }
-    function saveEvents(ev){localStorage.setItem('calEvents', JSON.stringify(ev))}
+  }
 
-    // sample events (only added if storage empty)
-    if(!localStorage.getItem('calEvents')){
-      const sample = {};
-      const y=current.getFullYear(), m=current.getMonth();
-      function key(day){return `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`}
-      sample[key(2)] = [{id:1,title:'Processo penal',time:'',color:'#0f9d58'}];
-      sample[key(4)] = [{id:2,title:'ECI e direitos humanos',time:'',color:'#0f9d58'}];
-      sample[key(6)] = [{id:3,title:'Lei 812',time:'',color:'#0f9d58'}];
-      sample[key(10)] = [{id:4,title:'CF/88 (II)',time:'',color:'#0f9d58'}];
-      sample[key(13)] = [{id:5,title:'Administração pública',time:'',color:'#0f9d58'}];
-      sample[key(15)] = [{id:6,title:'Proclamação',time:'',color:'#0f9d58'}];
-      sample[key(17)] = [{id:7,title:'Sistema e direitos Humanos',time:'',color:'#0f9d58'}];
-      sample[key(18)] = [{id:8,title:'Legis. Ambien',time:'',color:'#0f9d58'}];
-      sample[key(20)] = [{id:9,title:'Noções de fir',time:'',color:'#0f9d58'}];
-      sample[key(24)] = [{id:10,title:'Legist. Ambien',time:'',color:'#0f9d58'}];
-      sample[key(26)] = [{id:11,title:'ProntoSoc',time:'',color:'#0f9d58'}];
-      localStorage.setItem('calEvents', JSON.stringify(sample))
+  function toggleTheme() {
+    if (document.body.classList.contains('dark')) {
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      themeToggle.textContent = '🌙 Modo escuro';
+    } else {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = '☀️ Modo claro';
+    }
+  }
+  themeToggle.addEventListener('click', toggleTheme);
+
+  // ====================== STORAGE ======================
+  function loadEvents() {
+    try {
+      return JSON.parse(localStorage.getItem('calEvents') || '{}');
+    } catch(e) {
+      return {};
+    }
+  }
+  function saveEvents(eventsObj) {
+    localStorage.setItem('calEvents', JSON.stringify(eventsObj));
+  }
+
+  // Dados iniciais (se vazio)
+  if (!localStorage.getItem('calEvents')) {
+    const sample = {};
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = today.getMonth();
+    const pad = (n) => String(n).padStart(2, '0');
+    const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
+    sample[key(2)] = [{ id: Date.now()+1, title: 'Processo penal', time: '', color: '#0f9d58' }];
+    sample[key(4)] = [{ id: Date.now()+2, title: 'ECI e direitos humanos', time: '', color: '#0f9d58' }];
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00-11:00', color: '#0f9d58' }];
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF/88 (II)', time: '', color: '#0f9d58' }];
+    sample[key(13)] = [{ id: Date.now()+5, title: 'Administração pública', time: '14:30', color: '#2563eb' }];
+    sample[key(15)] = [{ id: Date.now()+6, title: 'Proclamação', time: '', color: '#f59e0b' }];
+    sample[key(17)] = [{ id: Date.now()+7, title: 'Sistema de direitos Humanos', time: '', color: '#0f9d58' }];
+    sample[key(18)] = [{ id: Date.now()+8, title: 'Legis. Ambiental', time: '19:00', color: '#0f9d58' }];
+    sample[key(20)] = [{ id: Date.now()+9, title: 'Noções de finanças', time: '', color: '#ef4444' }];
+    sample[key(24)] = [{ id: Date.now()+10, title: 'Legis. Trabalho', time: '', color: '#0f9d58' }];
+    sample[key(26)] = [{ id: Date.now()+11, title: 'ProntoSoc', time: '08:00-10:00', color: '#0f9d58' }];
+    saveEvents(sample);
+  }
+
+  // ====================== RENDER ======================
+  function formatMonthYear(d) {
+    return d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, l => l.toUpperCase());
+  }
+
+  function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
+
+  function render() {
+    grid.innerHTML = '';
+    monthLabel.textContent = formatMonthYear(currentDate);
+    const firstDay = startOfMonth(currentDate);
+    const lastDay = endOfMonth(currentDate);
+    const startWeekday = firstDay.getDay();
+    const totalDays = lastDay.getDate();
+    const eventsMap = loadEvents();
+
+    // células anteriores
+    const prevMonthLastDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+    for (let i = 0; i < startWeekday; i++) {
+      const dayNum = prevMonthLastDate - startWeekday + 1 + i;
+      const emptyCell = document.createElement('div');
+      emptyCell.className = 'cell';
+      emptyCell.style.opacity = '0.4';
+      const dateSpan = document.createElement('div');
+      dateSpan.className = 'date';
+      dateSpan.textContent = dayNum;
+      emptyCell.appendChild(dateSpan);
+      grid.appendChild(emptyCell);
     }
 
-    function render(){
-      grid.innerHTML='';
-      monthLabel.textContent = formatMonthYear(current);
-      const first = startOfMonth(current);
-      const last = endOfMonth(current);
-      const startWeekday = first.getDay();
-      const totalDays = last.getDate();
-      const events = loadEvents();
+    // dias do mês
+    for (let d = 1; d <= totalDays; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      const dateSpan = document.createElement('div');
+      dateSpan.className = 'date';
+      dateSpan.textContent = d;
+      cell.appendChild(dateSpan);
 
-      // previous month's trailing cells
-      const prevDays = startWeekday;
-      const prevLast = new Date(current.getFullYear(), current.getMonth(), 0).getDate();
-      for(let i=0;i<prevDays;i++){
-        const day = prevLast - prevDays + 1 + i;
-        const cell = document.createElement('div');cell.className='cell';cell.style.opacity=.35;
-        const dlabel=document.createElement('div');dlabel.className='date';dlabel.textContent=day;cell.appendChild(dlabel);
-        grid.appendChild(cell)
-      }
+      const key = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayEvents = eventsMap[key] || [];
+      const eventsContainer = document.createElement('div');
+      eventsContainer.className = 'events';
 
-      // this month's days
-      for(let d=1; d<=totalDays; d++){
-        const cell = document.createElement('div');cell.className='cell';
-        const dlabel=document.createElement('div');dlabel.className='date';dlabel.textContent=d;cell.appendChild(dlabel);
-        const key = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const evs = events[key]||[];
-        const container = document.createElement('div');container.className='events';
-        if(evs.length===0){
-          const em = document.createElement('div');em.className='empty';em.textContent='Clique para adicionar';container.appendChild(em)
-        } else {
-          evs.forEach(ev=>{
-            const e = document.createElement('div');e.className='event small';e.textContent = ev.time? (ev.time+' • '+ev.title) : ev.title; e.style.background=ev.color; e.title = ev.title;
-            e.onclick = (evclick=>()=>{openModal(key, evclick.id)})(ev);
-            container.appendChild(e)
-          })
-        }
-        cell.appendChild(container);
-        cell.onclick = () => openModal(key);
-        grid.appendChild(cell)
-      }
-
-      // fill remaining cells to complete weeks (up to 42 cells)
-      const totalCells = grid.children.length; const toAdd = (7 - (totalCells % 7)) % 7;
-      for(let i=0;i<toAdd;i++){const cell = document.createElement('div');cell.className='cell';cell.style.opacity=.35;grid.appendChild(cell)}
-
-      info.textContent = Object.values(loadEvents()).flat().length + ' eventos salvos'
-    }
-
-    function openModal(dateKey, id=null){
-      selectedDate = dateKey; editingId = id; modalBack.style.display='flex';
-      const events = loadEvents()[dateKey]||[];
-      if(id){
-        const ev = events.find(x=>x.id===id);
-        evTitle.value = ev.title; evTime.value = ev.time; evColor.value = ev.color;
-        deleteBtn.style.display = 'inline-block';
-      } else { evTitle.value=''; evTime.value=''; evColor.value='#0f9d58'; deleteBtn.style.display='none' }
-    }
-    cancelBtn.onclick = ()=>{modalBack.style.display='none'}
-    modalBack.onclick = (e)=>{ if(e.target===modalBack) modalBack.style.display='none' }
-
-    saveBtn.onclick = ()=>{
-      const title = evTitle.value.trim(); if(!title){alert('Digite um título'); return}
-      const events = loadEvents(); const arr = events[selectedDate]||[];
-      if(editingId){
-        const ev = arr.find(x=>x.id===editingId); ev.title=title; ev.time=evTime.value; ev.color=evColor.value;
+      if (dayEvents.length === 0) {
+        const hint = document.createElement('div');
+        hint.className = 'empty';
+        hint.textContent = '+ adicionar';
+        eventsContainer.appendChild(hint);
       } else {
-        const nid = Date.now(); arr.push({id:nid,title, time:evTime.value, color:evColor.value});
+        dayEvents.forEach(ev => {
+          const evDiv = document.createElement('div');
+          evDiv.className = 'event small';
+          evDiv.textContent = ev.time ? `${ev.time} • ${ev.title}` : ev.title;
+          evDiv.style.backgroundColor = ev.color;
+          evDiv.title = `Editar: ${ev.title}`;
+          evDiv.onclick = (e) => {
+            e.stopPropagation();
+            openModalForEdit(key, ev.id);
+          };
+          eventsContainer.appendChild(evDiv);
+        });
       }
-      events[selectedDate]=arr; saveEvents(events); modalBack.style.display='none'; render();
+
+      cell.appendChild(eventsContainer);
+      cell.onclick = (e) => {
+        if (e.target === cell || e.target.classList.contains('cell') || e.target === dateSpan || e.target === eventsContainer) {
+          openModalForAdd(key);
+        }
+      };
+      grid.appendChild(cell);
     }
 
-    deleteBtn.onclick = ()=>{
-      if(!confirm('Excluir evento?')) return; const events = loadEvents(); const arr = events[selectedDate]||[]; const idx = arr.findIndex(x=>x.id===editingId); if(idx>-1) arr.splice(idx,1); events[selectedDate]=arr; saveEvents(events); modalBack.style.display='none'; render();
+    // completar grid
+    const currentCells = grid.children.length;
+    const remaining = (7 - (currentCells % 7)) % 7;
+    for (let i = 0; i < remaining; i++) {
+      const filler = document.createElement('div');
+      filler.className = 'cell';
+      filler.style.opacity = '0.2';
+      grid.appendChild(filler);
     }
 
-    document.getElementById('prev').onclick = ()=>{current = new Date(current.getFullYear(), current.getMonth()-1, 1); render()}
-    document.getElementById('next').onclick = ()=>{current = new Date(current.getFullYear(), current.getMonth()+1, 1); render()}
-    document.getElementById('today').onclick = ()=>{current = new Date(); render()}
-    document.getElementById('export').onclick = ()=>{const data = localStorage.getItem('calEvents')||'{}'; const blob = new Blob([data],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='calendario_eventos.json'; a.click(); URL.revokeObjectURL(url)}
+    const allEvents = Object.values(loadEvents()).flat();
+    info.textContent = `📌 ${allEvents.length} evento(s) cadastrado(s)`;
+  }
 
+  // ====================== MODAL ======================
+  function openModalForAdd(dateKey) {
+    selectedDateKey = dateKey;
+    editingEventId = null;
+    modalTitle.textContent = '➕ Adicionar Evento';
+    evTitle.value = '';
+    evTime.value = '';
+    evColor.value = '#0f9d58';
+    deleteBtn.style.display = 'none';
+    modalBack.style.display = 'flex';
+  }
+
+  function openModalForEdit(dateKey, eventId) {
+    const eventsMap = loadEvents();
+    const dayEvents = eventsMap[dateKey] || [];
+    const eventToEdit = dayEvents.find(ev => ev.id === eventId);
+    if (!eventToEdit) return;
+
+    selectedDateKey = dateKey;
+    editingEventId = eventId;
+    modalTitle.textContent = '✏️ Editar Evento';
+    evTitle.value = eventToEdit.title;
+    evTime.value = eventToEdit.time || '';
+    evColor.value = eventToEdit.color || '#0f9d58';
+    deleteBtn.style.display = 'inline-block';
+    modalBack.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modalBack.style.display = 'none';
+    selectedDateKey = null;
+    editingEventId = null;
+  }
+
+  function saveEventHandler() {
+    const title = evTitle.value.trim();
+    if (!title) {
+      alert('Por favor, informe um título para o evento.');
+      return;
+    }
+
+    const eventsMap = loadEvents();
+    const dayEvents = eventsMap[selectedDateKey] || [];
+
+    if (editingEventId) {
+      const target = dayEvents.find(ev => ev.id === editingEventId);
+      if (target) {
+        target.title = title;
+        target.time = evTime.value;
+        target.color = evColor.value;
+      } else {
+        alert('Evento não encontrado para edição.');
+        closeModal();
+        return;
+      }
+    } else {
+      const newId = Date.now();
+      dayEvents.push({
+        id: newId,
+        title: title,
+        time: evTime.value,
+        color: evColor.value
+      });
+    }
+
+    eventsMap[selectedDateKey] = dayEvents;
+    saveEvents(eventsMap);
+    closeModal();
     render();
-  </script>
+  }
+
+  function deleteEventHandler() {
+    if (!editingEventId) return;
+    if (!confirm('Tem certeza que deseja excluir este evento?')) return;
+
+    const eventsMap = loadEvents();
+    const dayEvents = eventsMap[selectedDateKey] || [];
+    const index = dayEvents.findIndex(ev => ev.id === editingEventId);
+    if (index !== -1) {
+      dayEvents.splice(index, 1);
+      if (dayEvents.length === 0) {
+        delete eventsMap[selectedDateKey];
+      } else {
+        eventsMap[selectedDateKey] = dayEvents;
+      }
+      saveEvents(eventsMap);
+    }
+    closeModal();
+    render();
+  }
+
+  // ====================== IMPORTAR JSON ======================
+  function importFromJSON(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const importedData = JSON.parse(e.target.result);
+        // Validação simples: deve ser um objeto
+        if (typeof importedData === 'object' && importedData !== null) {
+          saveEvents(importedData);
+          render();
+          alert('✅ Importação concluída! Os eventos foram substituídos pelos do arquivo.');
+        } else {
+          throw new Error('Formato inválido');
+        }
+      } catch (err) {
+        alert('❌ Arquivo inválido. Certifique-se de que é um JSON gerado pelo calendário.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  importBtn.addEventListener('click', () => {
+    importFile.click();
+  });
+  importFile.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      importFromJSON(e.target.files[0]);
+    }
+    importFile.value = ''; // permite importar o mesmo arquivo novamente se necessário
+  });
+
+  // ====================== EVENTOS DOS BOTÕES ======================
+  document.getElementById('prev').onclick = () => {
+    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    render();
+  };
+  document.getElementById('next').onclick = () => {
+    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    render();
+  };
+  document.getElementById('today').onclick = () => {
+    currentDate = new Date();
+    render();
+  };
+  document.getElementById('export').onclick = () => {
+    const data = localStorage.getItem('calEvents') || '{}';
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `estudos_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  saveBtn.onclick = saveEventHandler;
+  cancelBtn.onclick = closeModal;
+  deleteBtn.onclick = deleteEventHandler;
+
+  modalBack.onclick = (e) => {
+    if (e.target === modalBack) closeModal();
+  };
+
+  // ====================== INICIALIZAÇÃO ======================
+  weekdays.forEach(day => {
+    const el = document.createElement('div');
+    el.className = 'weekday';
+    el.textContent = day;
+    weekdaysRow.appendChild(el);
+  });
+
+  initTheme();
+  render();
+</script>
 </body>
 </html>
