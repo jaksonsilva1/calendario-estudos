@@ -22,6 +22,8 @@
       --delete-btn-bg: #fee2e2;
       --delete-btn-text: #b91c1c;
       --delete-btn-hover: #fecaca;
+      --info-bg: #f1f5f9;
+      --info-text: #334155;
     }
 
     body.dark {
@@ -41,6 +43,8 @@
       --delete-btn-bg: #450a0a;
       --delete-btn-text: #f87171;
       --delete-btn-hover: #7f1a1a;
+      --info-bg: #1e293b;
+      --info-text: #cbd5e1;
     }
 
     * {
@@ -65,7 +69,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 12px;
     }
@@ -80,6 +84,58 @@
       gap: 6px;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    /* Informativo de cores */
+    .color-legend {
+      background: var(--info-bg);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    .legend-title {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-colors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+    }
+
+    .legend-text {
+      color: var(--info-text);
+      font-size: 11px;
+    }
+
+    .legend-range {
+      font-weight: 600;
+      font-size: 10px;
+      color: var(--muted);
     }
 
     button {
@@ -324,6 +380,18 @@
         padding: 5px 8px;
         font-size: 12px;
       }
+
+      .color-legend {
+        padding: 8px 12px;
+      }
+
+      .legend-colors {
+        gap: 10px;
+      }
+
+      .legend-text {
+        font-size: 10px;
+      }
     }
 
     @media (max-width: 600px) {
@@ -357,6 +425,11 @@
       
       .weekday {
         font-size: 10px;
+      }
+
+      .color-legend {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
@@ -398,6 +471,43 @@
     </div>
   </header>
 
+  <!-- Informativo de cores baseado em percentual de acertos/dificuldade -->
+  <div class="color-legend">
+    <div class="legend-title">
+      📊 🎨 Legenda: Percentual de Acertos / Nível de Dificuldade
+    </div>
+    <div class="legend-colors">
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #ef4444;"></div>
+        <div class="legend-text">
+          <strong>🔴 Crítico</strong>
+          <span class="legend-range">(≤ 59%)</span>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #ff9800;"></div>
+        <div class="legend-text">
+          <strong>🟠 Difícil</strong>
+          <span class="legend-range">(60% – 69,99%)</span>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #ffc107;"></div>
+        <div class="legend-text">
+          <strong>🟡 Razoável</strong>
+          <span class="legend-range">(70% – 79,99%)</span>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #4caf50;"></div>
+        <div class="legend-text">
+          <strong>🟢 Domínio</strong>
+          <span class="legend-range">(≥ 80%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="calendar">
     <div class="weekdays" id="weekdays"></div>
     <div class="grid" id="grid"></div>
@@ -414,20 +524,20 @@
     <h3 id="modalTitle">Adicionar Evento</h3>
     <div class="form-row">
       <label>📌 Título *</label>
-      <input id="evTitle" type="text" placeholder="Ex: DP - Teoria" autocomplete="off" />
+      <input id="evTitle" type="text" placeholder="Ex: DP - Teoria do crime" autocomplete="off" />
     </div>
     <div class="form-row">
       <label>⏰ Horário (opcional)</label>
       <input id="evTime" type="text" placeholder="Ex: 19:00-21:00" />
     </div>
     <div class="form-row">
-      <label>🎨 Cor</label>
+      <label>🎨 Cor (baseada no seu desempenho)</label>
       <select id="evColor">
-  <option value="#4caf50">🟢 Verde - Domínio (fácil)</option>
-  <option value="#ffc107">🟡 Amarelo - Razoável</option>
-  <option value="#ff9800">🟠 Laranja - Difícil</option>
-  <option value="#ef4444">🔴 Vermelho - Crítico (prioridade)</option>
-</select>
+        <option value="#ef4444">🔴 Vermelho - Crítico (≤ 59% acertos)</option>
+        <option value="#ff9800">🟠 Laranja - Difícil (60% a 69,99%)</option>
+        <option value="#ffc107">🟡 Amarelo - Razoável (70% a 79,99%)</option>
+        <option value="#4caf50">🟢 Verde - Domínio (≥ 80%)</option>
+      </select>
     </div>
     <div class="modal-actions">
       <button id="deleteBtn" class="small" style="display:none">🗑️ Excluir</button>
@@ -498,7 +608,7 @@
     localStorage.setItem('calEvents', JSON.stringify(eventsObj));
   }
 
-  // Dados iniciais (se vazio)
+  // Dados iniciais (se vazio) - Atualizados com novas cores
   if (!localStorage.getItem('calEvents')) {
     const sample = {};
     const today = new Date();
@@ -506,14 +616,14 @@
     const m = today.getMonth();
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
-    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria', time: '19:00', color: '#0f9d58' }];
-    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', color: '#2ecc71' }];
-    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', color: '#0f9d58' }];
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', color: '#27ae60' }];
-    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', color: '#229954' }];
-    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO', time: '', color: '#f59e0b' }];
-    sample[key(17)] = [{ id: Date.now()+7, title: 'DH - SIDH', time: '19:00', color: '#2ecc71' }];
-    sample[key(18)] = [{ id: Date.now()+8, title: 'AMBI - Lei 9.605', time: '19:00', color: '#0f9d58' }];
+    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria', time: '19:00', color: '#ef4444' }];
+    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', color: '#ff9800' }];
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', color: '#ffc107' }];
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', color: '#4caf50' }];
+    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', color: '#ffc107' }];
+    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO', time: '', color: '#ff9800' }];
+    sample[key(17)] = [{ id: Date.now()+7, title: 'DH - SIDH', time: '19:00', color: '#ef4444' }];
+    sample[key(18)] = [{ id: Date.now()+8, title: 'AMBI - Lei 9.605', time: '19:00', color: '#ffc107' }];
     sample[key(20)] = [{ id: Date.now()+9, title: 'SIMULADO', time: '', color: '#ef4444' }];
     saveEvents(sample);
   }
@@ -613,7 +723,7 @@
     modalTitle.textContent = '➕ Adicionar Evento';
     evTitle.value = '';
     evTime.value = '';
-    evColor.value = '#0f9d58';
+    evColor.value = '#ef4444';
     deleteBtn.style.display = 'none';
     modalBack.style.display = 'flex';
   }
@@ -629,7 +739,7 @@
     modalTitle.textContent = '✏️ Editar Evento';
     evTitle.value = eventToEdit.title;
     evTime.value = eventToEdit.time || '';
-    evColor.value = eventToEdit.color || '#0f9d58';
+    evColor.value = eventToEdit.color || '#ef4444';
     deleteBtn.style.display = 'inline-block';
     modalBack.style.display = 'flex';
   }
