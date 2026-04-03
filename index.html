@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-  <title>Calendário de Estudos GMM • Claro/Escuro + Import/Export</title>
+  <title>Calendário de Estudos GMM • Acertos/Erros</title>
   <style>
     :root {
       --bg: #f7fafc;
@@ -24,6 +24,7 @@
       --delete-btn-hover: #fecaca;
       --info-bg: #f1f5f9;
       --info-text: #334155;
+      --stats-bg: #f8fafc;
     }
 
     body.dark {
@@ -45,6 +46,7 @@
       --delete-btn-hover: #7f1a1a;
       --info-bg: #1e293b;
       --info-text: #cbd5e1;
+      --stats-bg: #0f172a;
     }
 
     * {
@@ -61,7 +63,7 @@
     }
 
     .wrap {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
@@ -86,7 +88,6 @@
       flex-wrap: wrap;
     }
 
-    /* Informativo de cores */
     .color-legend {
       background: var(--info-bg);
       border-radius: 12px;
@@ -280,7 +281,7 @@
       padding: 20px;
       border-radius: 16px;
       width: 90%;
-      max-width: 380px;
+      max-width: 420px;
       box-shadow: 0 20px 35px rgba(2, 6, 23, 0.4);
       transition: background 0.2s;
     }
@@ -305,6 +306,7 @@
     }
 
     input[type="text"],
+    input[type="number"],
     select,
     textarea {
       padding: 8px 10px;
@@ -314,6 +316,28 @@
       color: var(--text);
       font-family: inherit;
       font-size: 14px;
+    }
+
+    .stats-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .percentage {
+      margin-top: 8px;
+      padding: 8px;
+      background: var(--stats-bg);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
     }
 
     .modal-actions {
@@ -432,33 +456,12 @@
         align-items: flex-start;
       }
     }
-
-    @media (max-width: 480px) {
-      .grid {
-        gap: 3px;
-      }
-      
-      .cell .date {
-        font-size: 8px;
-        top: 3px;
-        left: 4px;
-      }
-      
-      .events {
-        margin-top: 18px;
-      }
-      
-      .event {
-        font-size: 7px;
-        padding: 2px 3px;
-      }
-    }
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>📚 Calendário de Estudos GMM</h1>
+    <h1>📚 Calendário de Estudos GMM • Acertos/Erros</h1>
     <div class="controls">
       <button id="themeToggle" class="small">🌙 Modo escuro</button>
       <button id="prev" title="Mês anterior">◀</button>
@@ -471,10 +474,9 @@
     </div>
   </header>
 
-  <!-- Informativo de cores baseado em percentual de acertos/dificuldade -->
   <div class="color-legend">
     <div class="legend-title">
-      📊 🎨 Legenda: Percentual de Acertos / Nível de Dificuldade
+      📊 🎨 Legenda: Percentual de Acertos
     </div>
     <div class="legend-colors">
       <div class="legend-item">
@@ -530,14 +532,18 @@
       <label>⏰ Horário (opcional)</label>
       <input id="evTime" type="text" placeholder="Ex: 19:00-21:00" />
     </div>
-    <div class="form-row">
-      <label>🎨 Cor (baseada no seu desempenho)</label>
-      <select id="evColor">
-        <option value="#ef4444">🔴 Vermelho - Crítico (≤ 59% acertos)</option>
-        <option value="#ff9800">🟠 Laranja - Difícil (60% a 69,99%)</option>
-        <option value="#ffc107">🟡 Amarelo - Razoável (70% a 79,99%)</option>
-        <option value="#4caf50">🟢 Verde - Domínio (≥ 80%)</option>
-      </select>
+    <div class="stats-group">
+      <div class="stat-field">
+        <label>✅ Número de Acertos</label>
+        <input id="evHits" type="number" min="0" value="0" />
+      </div>
+      <div class="stat-field">
+        <label>❌ Número de Erros</label>
+        <input id="evErrors" type="number" min="0" value="0" />
+      </div>
+    </div>
+    <div class="percentage" id="percentageDisplay">
+      📊 Percentual: 0%
     </div>
     <div class="modal-actions">
       <button id="deleteBtn" class="small" style="display:none">🗑️ Excluir</button>
@@ -557,7 +563,9 @@
   const modalTitle = document.getElementById('modalTitle');
   const evTitle = document.getElementById('evTitle');
   const evTime = document.getElementById('evTime');
-  const evColor = document.getElementById('evColor');
+  const evHits = document.getElementById('evHits');
+  const evErrors = document.getElementById('evErrors');
+  const percentageDisplay = document.getElementById('percentageDisplay');
   const saveBtn = document.getElementById('saveBtn');
   const cancelBtn = document.getElementById('cancelBtn');
   const deleteBtn = document.getElementById('deleteBtn');
@@ -569,6 +577,34 @@
   let currentDate = new Date();
   let selectedDateKey = null;
   let editingEventId = null;
+
+  // ====================== FUNÇÕES DE PERCENTUAL E COR ======================
+  function calculatePercentage(hits, errors) {
+    const total = hits + errors;
+    if (total === 0) return 0;
+    return (hits / total) * 100;
+  }
+
+  function getColorByPercentage(percentage) {
+    if (percentage <= 59) return '#ef4444';
+    if (percentage <= 69) return '#ff9800';
+    if (percentage <= 79) return '#ffc107';
+    return '#4caf50';
+  }
+
+  function updatePercentageDisplay() {
+    const hits = parseInt(evHits.value) || 0;
+    const errors = parseInt(evErrors.value) || 0;
+    const percentage = calculatePercentage(hits, errors);
+    const color = getColorByPercentage(percentage);
+    
+    percentageDisplay.innerHTML = `📊 Percentual de Acertos: ${percentage.toFixed(1)}%`;
+    
+    // Feedback visual no percentual
+    percentageDisplay.style.backgroundColor = color + '20';
+    percentageDisplay.style.color = color;
+    percentageDisplay.style.borderLeft = `4px solid ${color}`;
+  }
 
   // ====================== TEMA ======================
   function initTheme() {
@@ -608,7 +644,7 @@
     localStorage.setItem('calEvents', JSON.stringify(eventsObj));
   }
 
-  // Dados iniciais (se vazio) - Atualizados com novas cores
+  // Dados iniciais (se vazio)
   if (!localStorage.getItem('calEvents')) {
     const sample = {};
     const today = new Date();
@@ -616,15 +652,49 @@
     const m = today.getMonth();
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
-    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria', time: '19:00', color: '#ef4444' }];
-    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', color: '#ff9800' }];
-    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', color: '#ffc107' }];
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', color: '#4caf50' }];
-    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', color: '#ffc107' }];
-    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO', time: '', color: '#ff9800' }];
-    sample[key(17)] = [{ id: Date.now()+7, title: 'DH - SIDH', time: '19:00', color: '#ef4444' }];
-    sample[key(18)] = [{ id: Date.now()+8, title: 'AMBI - Lei 9.605', time: '19:00', color: '#ffc107' }];
-    sample[key(20)] = [{ id: Date.now()+9, title: 'SIMULADO', time: '', color: '#ef4444' }];
+    
+    sample[key(2)] = [{ 
+      id: Date.now()+1, 
+      title: 'DP - Teoria do Crime', 
+      time: '19:00', 
+      hits: 12, 
+      errors: 15
+    }];
+    sample[key(4)] = [{ 
+      id: Date.now()+2, 
+      title: 'DH - ECI', 
+      time: '19:00', 
+      hits: 20, 
+      errors: 8
+    }];
+    sample[key(6)] = [{ 
+      id: Date.now()+3, 
+      title: 'Lei 8.112', 
+      time: '09:00', 
+      hits: 7, 
+      errors: 12
+    }];
+    sample[key(10)] = [{ 
+      id: Date.now()+4, 
+      title: 'CF - Art. 5º', 
+      time: '19:00', 
+      hits: 25, 
+      errors: 7
+    }];
+    sample[key(13)] = [{ 
+      id: Date.now()+5, 
+      title: 'ADM - Licitações', 
+      time: '14:30', 
+      hits: 15, 
+      errors: 10
+    }];
+    sample[key(15)] = [{ 
+      id: Date.now()+6, 
+      title: 'REVISÃO GERAL', 
+      time: '', 
+      hits: 30, 
+      errors: 20
+    }];
     saveEvents(sample);
   }
 
@@ -682,9 +752,25 @@
         dayEvents.forEach(ev => {
           const evDiv = document.createElement('div');
           evDiv.className = 'event';
-          evDiv.textContent = ev.time ? `${ev.time} ${ev.title}` : ev.title;
-          evDiv.style.backgroundColor = ev.color;
-          evDiv.title = `Editar: ${ev.title}`;
+          
+          // Calcular percentual para exibição
+          const hits = ev.hits || 0;
+          const errors = ev.errors || 0;
+          const total = hits + errors;
+          const percentage = total > 0 ? ((hits / total) * 100).toFixed(0) : 0;
+          
+          // Definir cor baseada no percentual
+          const color = getColorByPercentage(parseFloat(percentage));
+          
+          // Texto do evento com estatísticas
+          let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
+          if (total > 0) {
+            eventText += ` ✅${hits} ❌${errors} (${percentage}%)`;
+          }
+          
+          evDiv.textContent = eventText;
+          evDiv.style.backgroundColor = color;
+          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage}%`;
           evDiv.onclick = (e) => {
             e.stopPropagation();
             openModalForEdit(key, ev.id);
@@ -712,19 +798,30 @@
       grid.appendChild(filler);
     }
 
+    // Estatísticas totais
     const allEvents = Object.values(loadEvents()).flat();
-    info.textContent = `📌 ${allEvents.length} evento(s)`;
+    let totalHits = 0, totalErrors = 0;
+    allEvents.forEach(ev => {
+      totalHits += ev.hits || 0;
+      totalErrors += ev.errors || 0;
+    });
+    const totalQuestions = totalHits + totalErrors;
+    const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
+    
+    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% geral`;
   }
 
   // ====================== MODAL ======================
   function openModalForAdd(dateKey) {
     selectedDateKey = dateKey;
     editingEventId = null;
-    modalTitle.textContent = '➕ Adicionar Evento';
+    modalTitle.textContent = '➕ Adicionar Evento de Estudo';
     evTitle.value = '';
     evTime.value = '';
-    evColor.value = '#ef4444';
+    evHits.value = '0';
+    evErrors.value = '0';
     deleteBtn.style.display = 'none';
+    updatePercentageDisplay();
     modalBack.style.display = 'flex';
   }
 
@@ -736,11 +833,13 @@
 
     selectedDateKey = dateKey;
     editingEventId = eventId;
-    modalTitle.textContent = '✏️ Editar Evento';
+    modalTitle.textContent = '✏️ Editar Evento de Estudo';
     evTitle.value = eventToEdit.title;
     evTime.value = eventToEdit.time || '';
-    evColor.value = eventToEdit.color || '#ef4444';
+    evHits.value = eventToEdit.hits || 0;
+    evErrors.value = eventToEdit.errors || 0;
     deleteBtn.style.display = 'inline-block';
+    updatePercentageDisplay();
     modalBack.style.display = 'flex';
   }
 
@@ -757,6 +856,9 @@
       return;
     }
 
+    const hits = parseInt(evHits.value) || 0;
+    const errors = parseInt(evErrors.value) || 0;
+
     const eventsMap = loadEvents();
     const dayEvents = eventsMap[selectedDateKey] || [];
 
@@ -765,7 +867,8 @@
       if (target) {
         target.title = title;
         target.time = evTime.value;
-        target.color = evColor.value;
+        target.hits = hits;
+        target.errors = errors;
       } else {
         alert('Evento não encontrado para edição.');
         closeModal();
@@ -777,7 +880,8 @@
         id: newId,
         title: title,
         time: evTime.value,
-        color: evColor.value
+        hits: hits,
+        errors: errors
       });
     }
 
@@ -807,7 +911,7 @@
     render();
   }
 
-  // ====================== IMPORTAR JSON ======================
+  // ====================== IMPORTAR/EXPORTAR ======================
   function importFromJSON(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -864,6 +968,10 @@
   saveBtn.onclick = saveEventHandler;
   cancelBtn.onclick = closeModal;
   deleteBtn.onclick = deleteEventHandler;
+
+  // Event listeners para atualizar display do percentual
+  evHits.addEventListener('input', updatePercentageDisplay);
+  evErrors.addEventListener('input', updatePercentageDisplay);
 
   modalBack.onclick = (e) => {
     if (e.target === modalBack) closeModal();
