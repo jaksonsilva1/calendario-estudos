@@ -694,12 +694,9 @@
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
           // Ajuste contraste para amarelo
-          if (percentage >= 70 && percentage <= 74.99) {
-            evDiv.style.color = '#1e1e1e';
-            evDiv.style.textShadow = 'none';
-          } else {
+          
             evDiv.style.color = '#fff';
-          }
+          
           
           evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}%`;
           evDiv.onclick = (e) => {
