@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-  <title>Calendário de Estudos GMM • Acertos/Erros</title>
+  <title>Calendário de Estudos GMM • Escala Profissional</title>
   <style>
     :root {
       --bg: #f7fafc;
@@ -93,12 +93,6 @@
       border-radius: 12px;
       padding: 10px 16px;
       margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 12px;
       border: 1px solid var(--border-light);
     }
 
@@ -108,35 +102,50 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      margin-bottom: 10px;
+      font-size: 13px;
     }
 
-    .legend-colors {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .legend-color {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       border-radius: 6px;
+      flex-shrink: 0;
     }
 
-    .legend-text {
-      color: var(--info-text);
-      font-size: 11px;
+    .legend-info {
+      flex: 1;
+    }
+
+    .legend-level {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text);
     }
 
     .legend-range {
-      font-weight: 600;
       font-size: 10px;
       color: var(--muted);
+      display: block;
+    }
+
+    .legend-desc {
+      font-size: 9px;
+      color: var(--info-text);
+      display: block;
+      font-style: italic;
     }
 
     button {
@@ -229,7 +238,6 @@
       display: inline-block;
       padding: 4px 6px;
       border-radius: 8px;
-      background: var(--accent, #0f9d58);
       color: #fff;
       font-size: 10px;
       max-width: 100%;
@@ -239,6 +247,8 @@
       transition: transform 0.05s;
       line-height: 1.2;
       text-align: center;
+      font-weight: 500;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.2);
     }
 
     .event:hover {
@@ -332,7 +342,7 @@
 
     .percentage {
       margin-top: 8px;
-      padding: 8px;
+      padding: 10px;
       background: var(--stats-bg);
       border-radius: 8px;
       text-align: center;
@@ -405,16 +415,13 @@
         font-size: 12px;
       }
 
-      .color-legend {
-        padding: 8px 12px;
+      .legend-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 8px;
       }
 
-      .legend-colors {
-        gap: 10px;
-      }
-
-      .legend-text {
-        font-size: 10px;
+      .legend-level {
+        font-size: 11px;
       }
     }
 
@@ -450,18 +457,13 @@
       .weekday {
         font-size: 10px;
       }
-
-      .color-legend {
-        flex-direction: column;
-        align-items: flex-start;
-      }
     }
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>📚 Calendário de Estudos GMM • Acertos/Erros</h1>
+    <h1>📚 Calendário de Estudos GMM • Escala Profissional</h1>
     <div class="controls">
       <button id="themeToggle" class="small">🌙 Modo escuro</button>
       <button id="prev" title="Mês anterior">◀</button>
@@ -474,37 +476,58 @@
     </div>
   </header>
 
+  <!-- NOVA LEGENDA PROFISSIONAL -->
   <div class="color-legend">
     <div class="legend-title">
-      📊 🎨 Legenda: Percentual de Acertos
+      🎯 🎨 ESCALA DE DESEMPENHO PROFISSIONAL
     </div>
-    <div class="legend-colors">
+    <div class="legend-grid">
       <div class="legend-item">
-        <div class="legend-color" style="background-color: #ef4444;"></div>
-        <div class="legend-text">
-          <strong>🔴 Crítico</strong>
-          <span class="legend-range">(≤ 59%)</span>
+        <div class="legend-color" style="background-color: #D32F2F;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🔴 CRÍTICO</div>
+          <div class="legend-range">0% – 59%</div>
+          <div class="legend-desc">abaixo do mínimo / reprovado</div>
         </div>
       </div>
       <div class="legend-item">
-        <div class="legend-color" style="background-color: #ff9800;"></div>
-        <div class="legend-text">
-          <strong>🟠 Difícil</strong>
-          <span class="legend-range">(60% – 69,99%)</span>
+        <div class="legend-color" style="background-color: #F57C00;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🟠 ALERTA</div>
+          <div class="legend-range">60% – 64%</div>
+          <div class="legend-desc">precisa melhorar urgente</div>
         </div>
       </div>
       <div class="legend-item">
-        <div class="legend-color" style="background-color: #ffc107;"></div>
-        <div class="legend-text">
-          <strong>🟡 Razoável</strong>
-          <span class="legend-range">(70% – 79,99%)</span>
+        <div class="legend-color" style="background-color: #FFF176;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🟡 MÉDIO</div>
+          <div class="legend-range">65% – 69%</div>
+          <div class="legend-desc">instável / muitos erros evitáveis</div>
         </div>
       </div>
       <div class="legend-item">
-        <div class="legend-color" style="background-color: #4caf50;"></div>
-        <div class="legend-text">
-          <strong>🟢 Domínio</strong>
-          <span class="legend-range">(≥ 80%)</span>
+        <div class="legend-color" style="background-color: #388E3C;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🟢 BOM</div>
+          <div class="legend-range">70% – 79%</div>
+          <div class="legend-desc">competitivo</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #1976D2;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🔵 ALTO</div>
+          <div class="legend-range">80% – 84%</div>
+          <div class="legend-desc">forte candidato</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #7B1FA2;"></div>
+        <div class="legend-info">
+          <div class="legend-level">🟣 ELITE</div>
+          <div class="legend-range">85% – 100%</div>
+          <div class="legend-desc">nível topo / dentro das vagas</div>
         </div>
       </div>
     </div>
@@ -578,18 +601,29 @@
   let selectedDateKey = null;
   let editingEventId = null;
 
-  // ====================== FUNÇÕES DE PERCENTUAL E COR ======================
+  // ====================== NOVA ESCALA DE CORES ======================
+  function getColorByPercentage(percentage) {
+    if (percentage <= 59) return '#D32F2F';  // CRÍTICO
+    if (percentage <= 64) return '#F57C00';  // ALERTA
+    if (percentage <= 69) return '#FFF176';  // MÉDIO
+    if (percentage <= 79) return '#388E3C';  // BOM
+    if (percentage <= 84) return '#1976D2';  // ALTO
+    return '#7B1FA2';                        // ELITE (85-100%)
+  }
+
+  function getLevelName(percentage) {
+    if (percentage <= 59) return 'CRÍTICO';
+    if (percentage <= 64) return 'ALERTA';
+    if (percentage <= 69) return 'MÉDIO';
+    if (percentage <= 79) return 'BOM';
+    if (percentage <= 84) return 'ALTO';
+    return 'ELITE';
+  }
+
   function calculatePercentage(hits, errors) {
     const total = hits + errors;
     if (total === 0) return 0;
     return (hits / total) * 100;
-  }
-
-  function getColorByPercentage(percentage) {
-    if (percentage <= 59) return '#ef4444';
-    if (percentage <= 69) return '#ff9800';
-    if (percentage <= 79) return '#ffc107';
-    return '#4caf50';
   }
 
   function updatePercentageDisplay() {
@@ -597,8 +631,9 @@
     const errors = parseInt(evErrors.value) || 0;
     const percentage = calculatePercentage(hits, errors);
     const color = getColorByPercentage(percentage);
+    const level = getLevelName(percentage);
     
-    percentageDisplay.innerHTML = `📊 Percentual de Acertos: ${percentage.toFixed(1)}%`;
+    percentageDisplay.innerHTML = `📊 Percentual: ${percentage.toFixed(1)}% (${level})`;
     
     // Feedback visual no percentual
     percentageDisplay.style.backgroundColor = color + '20';
@@ -644,7 +679,7 @@
     localStorage.setItem('calEvents', JSON.stringify(eventsObj));
   }
 
-  // Dados iniciais (se vazio)
+  // Dados iniciais com exemplos variados
   if (!localStorage.getItem('calEvents')) {
     const sample = {};
     const today = new Date();
@@ -653,48 +688,12 @@
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
     
-    sample[key(2)] = [{ 
-      id: Date.now()+1, 
-      title: 'DP - Teoria do Crime', 
-      time: '19:00', 
-      hits: 12, 
-      errors: 15
-    }];
-    sample[key(4)] = [{ 
-      id: Date.now()+2, 
-      title: 'DH - ECI', 
-      time: '19:00', 
-      hits: 20, 
-      errors: 8
-    }];
-    sample[key(6)] = [{ 
-      id: Date.now()+3, 
-      title: 'Lei 8.112', 
-      time: '09:00', 
-      hits: 7, 
-      errors: 12
-    }];
-    sample[key(10)] = [{ 
-      id: Date.now()+4, 
-      title: 'CF - Art. 5º', 
-      time: '19:00', 
-      hits: 25, 
-      errors: 7
-    }];
-    sample[key(13)] = [{ 
-      id: Date.now()+5, 
-      title: 'ADM - Licitações', 
-      time: '14:30', 
-      hits: 15, 
-      errors: 10
-    }];
-    sample[key(15)] = [{ 
-      id: Date.now()+6, 
-      title: 'REVISÃO GERAL', 
-      time: '', 
-      hits: 30, 
-      errors: 20
-    }];
+    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }]; // 44% - CRÍTICO
+    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }]; // 60% - ALERTA
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 20, errors: 10 }]; // 67% - MÉDIO
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 25, errors: 7 }]; // 78% - BOM
+    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 25, errors: 5 }]; // 83% - ALTO
+    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 35, errors: 5 }]; // 87% - ELITE
     saveEvents(sample);
   }
 
@@ -757,20 +756,29 @@
           const hits = ev.hits || 0;
           const errors = ev.errors || 0;
           const total = hits + errors;
-          const percentage = total > 0 ? ((hits / total) * 100).toFixed(0) : 0;
+          const percentage = total > 0 ? (hits / total) * 100 : 0;
+          const level = getLevelName(percentage);
           
           // Definir cor baseada no percentual
-          const color = getColorByPercentage(parseFloat(percentage));
+          const color = getColorByPercentage(percentage);
           
           // Texto do evento com estatísticas
           let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
           if (total > 0) {
-            eventText += ` ✅${hits} ❌${errors} (${percentage}%)`;
+            eventText += ` ✅${hits} ❌${errors} (${percentage.toFixed(0)}% • ${level})`;
+          } else {
+            eventText += ` (📊 sem dados)`;
           }
           
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
-          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage}%`;
+          // Ajustar cor do texto para maior contraste
+          if (percentage >= 65 && percentage <= 69) {
+            evDiv.style.color = '#333'; // texto escuro para fundo amarelo
+          } else {
+            evDiv.style.color = '#fff';
+          }
+          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}% | Nível: ${level}`;
           evDiv.onclick = (e) => {
             e.stopPropagation();
             openModalForEdit(key, ev.id);
@@ -798,17 +806,33 @@
       grid.appendChild(filler);
     }
 
-    // Estatísticas totais
+    // Estatísticas totais com níveis
     const allEvents = Object.values(loadEvents()).flat();
     let totalHits = 0, totalErrors = 0;
+    let criticalCount = 0, alertCount = 0, mediumCount = 0, goodCount = 0, highCount = 0, eliteCount = 0;
+    
     allEvents.forEach(ev => {
-      totalHits += ev.hits || 0;
-      totalErrors += ev.errors || 0;
+      const hits = ev.hits || 0;
+      const errors = ev.errors || 0;
+      totalHits += hits;
+      totalErrors += errors;
+      const total = hits + errors;
+      if (total > 0) {
+        const percentage = (hits / total) * 100;
+        if (percentage <= 59) criticalCount++;
+        else if (percentage <= 64) alertCount++;
+        else if (percentage <= 69) mediumCount++;
+        else if (percentage <= 79) goodCount++;
+        else if (percentage <= 84) highCount++;
+        else eliteCount++;
+      }
     });
+    
     const totalQuestions = totalHits + totalErrors;
     const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
+    const overallLevel = getLevelName(parseFloat(overallPercentage));
     
-    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% geral`;
+    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% (${overallLevel}) | 🔴${criticalCount} 🟠${alertCount} 🟡${mediumCount} 🟢${goodCount} 🔵${highCount} 🟣${eliteCount}`;
   }
 
   // ====================== MODAL ======================
