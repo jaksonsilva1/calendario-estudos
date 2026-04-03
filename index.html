@@ -166,54 +166,6 @@
       color: var(--accent-color, #2563eb);
     }
 
-    /* LEGENDA DE CORES - agora no final da página */
-    .legend-footer {
-      background: var(--legend-bg);
-      border-radius: 14px;
-      padding: 12px 20px;
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 12px;
-      border: 1px solid var(--border-light);
-    }
-
-    .legend-title {
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-    }
-
-    .legend-colors {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .legend-color {
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
-    }
-
-    .legend-text {
-      color: var(--info-text);
-      font-size: 12px;
-      font-weight: 500;
-    }
-
     button {
       background: var(--accent, #0f9d58);
       color: #fff;
@@ -459,16 +411,12 @@
       .event { font-size: 9px; padding: 3px 5px; }
       .empty { font-size: 10px; }
       button { padding: 5px 8px; font-size: 12px; }
-      .legend-colors { gap: 12px; }
-      .legend-footer { flex-direction: column; align-items: flex-start; }
-      .performance-stats { flex-direction: column; align-items: flex-start; }
     }
 
     @media (max-width: 600px) {
       .grid { gap: 4px; }
       .cell .date { font-size: 9px; }
       .event { font-size: 8px; padding: 2px 4px; }
-      .legend-text { font-size: 11px; }
     }
   </style>
 </head>
@@ -506,31 +454,6 @@
     <div class="footer">
       <div>💡 Clique no dia para adicionar / clique no evento para editar</div>
       <div id="info"></div>
-    </div>
-  </div>
-
-  <!-- LEGENDA DE CORES - AGORA NO FINAL DA PÁGINA -->
-  <div class="legend-footer">
-    <div class="legend-title">
-      🎯 ESCALA DE DESEMPENHO
-    </div>
-    <div class="legend-colors">
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #D32F2F;"></div>
-        <div class="legend-text"><strong>🔴 &lt;70%</strong></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #FBC02D;"></div>
-        <div class="legend-text"><strong>🟡 70% – 74,99%</strong></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #388E3C;"></div>
-        <div class="legend-text"><strong>🟢 75% – 78,99%</strong></div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #1976D2;"></div>
-        <div class="legend-text"><strong>🔵 79% – 100%</strong></div>
-      </div>
     </div>
   </div>
 </div>
