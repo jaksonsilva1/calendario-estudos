@@ -25,6 +25,9 @@
       --info-bg: #f1f5f9;
       --info-text: #334155;
       --stats-bg: #f8fafc;
+      --scrollbar-track: #e2e8f0;
+      --scrollbar-thumb: #cbd5e1;
+      --scrollbar-thumb-hover: #94a3b8;
     }
 
     body.dark {
@@ -47,10 +50,39 @@
       --info-bg: #1e293b;
       --info-text: #cbd5e1;
       --stats-bg: #0f172a;
+      --scrollbar-track: #1e293b;
+      --scrollbar-thumb: #334155;
+      --scrollbar-thumb-hover: #475569;
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    /* ====================== SCROLLBAR PERSONALIZADA ====================== */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+
+    /* Para Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
     }
 
     body {
@@ -88,11 +120,18 @@
       flex-wrap: wrap;
     }
 
+    /* Legenda estilo anterior - mais compacta */
     .color-legend {
       background: var(--info-bg);
       border-radius: 12px;
       padding: 10px 16px;
       margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
       border: 1px solid var(--border-light);
     }
 
@@ -102,50 +141,35 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 10px;
-      font-size: 13px;
     }
 
-    .legend-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
+    .legend-colors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .legend-color {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       border-radius: 6px;
-      flex-shrink: 0;
     }
 
-    .legend-info {
-      flex: 1;
-    }
-
-    .legend-level {
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--text);
+    .legend-text {
+      color: var(--info-text);
+      font-size: 11px;
     }
 
     .legend-range {
+      font-weight: 600;
       font-size: 10px;
       color: var(--muted);
-      display: block;
-    }
-
-    .legend-desc {
-      font-size: 9px;
-      color: var(--info-text);
-      display: block;
-      font-style: italic;
     }
 
     button {
@@ -207,12 +231,14 @@
       transition: all 0.1s;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .cell:hover {
       background: var(--cell-hover);
       border-color: var(--accent, #0f9d58);
       transform: scale(1.02);
+      z-index: 1;
     }
 
     .cell .date {
@@ -232,6 +258,20 @@
       flex: 1;
       overflow-y: auto;
       max-height: calc(100% - 28px);
+    }
+
+    /* Scrollbar dentro dos eventos - mais discreta ainda */
+    .events::-webkit-scrollbar {
+      width: 3px;
+    }
+    
+    .events::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .events::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 2px;
     }
 
     .event {
@@ -415,13 +455,16 @@
         font-size: 12px;
       }
 
-      .legend-grid {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 8px;
+      .color-legend {
+        padding: 8px 12px;
       }
 
-      .legend-level {
-        font-size: 11px;
+      .legend-colors {
+        gap: 10px;
+      }
+
+      .legend-text {
+        font-size: 10px;
       }
     }
 
@@ -457,6 +500,11 @@
       .weekday {
         font-size: 10px;
       }
+
+      .color-legend {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -476,58 +524,52 @@
     </div>
   </header>
 
-  <!-- NOVA LEGENDA PROFISSIONAL -->
+  <!-- LEGENDA ESTILO ANTERIOR -->
   <div class="color-legend">
     <div class="legend-title">
       🎯 🎨 ESCALA DE DESEMPENHO PROFISSIONAL
     </div>
-    <div class="legend-grid">
+    <div class="legend-colors">
       <div class="legend-item">
         <div class="legend-color" style="background-color: #D32F2F;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🔴 CRÍTICO</div>
-          <div class="legend-range">0% – 59%</div>
-          <div class="legend-desc">abaixo do mínimo / reprovado</div>
+        <div class="legend-text">
+          <strong>🔴 CRÍTICO</strong>
+          <span class="legend-range">(0% – 59%)</span>
         </div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #F57C00;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🟠 ALERTA</div>
-          <div class="legend-range">60% – 64%</div>
-          <div class="legend-desc">precisa melhorar urgente</div>
+        <div class="legend-text">
+          <strong>🟠 ALERTA</strong>
+          <span class="legend-range">(60% – 64%)</span>
         </div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #FFF176;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🟡 MÉDIO</div>
-          <div class="legend-range">65% – 69%</div>
-          <div class="legend-desc">instável / muitos erros evitáveis</div>
+        <div class="legend-text">
+          <strong>🟡 MÉDIO</strong>
+          <span class="legend-range">(65% – 69%)</span>
         </div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #388E3C;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🟢 BOM</div>
-          <div class="legend-range">70% – 79%</div>
-          <div class="legend-desc">competitivo</div>
+        <div class="legend-text">
+          <strong>🟢 BOM</strong>
+          <span class="legend-range">(70% – 79%)</span>
         </div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #1976D2;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🔵 ALTO</div>
-          <div class="legend-range">80% – 84%</div>
-          <div class="legend-desc">forte candidato</div>
+        <div class="legend-text">
+          <strong>🔵 ALTO</strong>
+          <span class="legend-range">(80% – 84%)</span>
         </div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #7B1FA2;"></div>
-        <div class="legend-info">
-          <div class="legend-level">🟣 ELITE</div>
-          <div class="legend-range">85% – 100%</div>
-          <div class="legend-desc">nível topo / dentro das vagas</div>
+        <div class="legend-text">
+          <strong>🟣 ELITE</strong>
+          <span class="legend-range">(85% – 100%)</span>
         </div>
       </div>
     </div>
@@ -601,7 +643,7 @@
   let selectedDateKey = null;
   let editingEventId = null;
 
-  // ====================== NOVA ESCALA DE CORES ======================
+  // ====================== ESCALA DE CORES ======================
   function getColorByPercentage(percentage) {
     if (percentage <= 59) return '#D32F2F';  // CRÍTICO
     if (percentage <= 64) return '#F57C00';  // ALERTA
@@ -635,7 +677,6 @@
     
     percentageDisplay.innerHTML = `📊 Percentual: ${percentage.toFixed(1)}% (${level})`;
     
-    // Feedback visual no percentual
     percentageDisplay.style.backgroundColor = color + '20';
     percentageDisplay.style.color = color;
     percentageDisplay.style.borderLeft = `4px solid ${color}`;
@@ -688,12 +729,12 @@
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
     
-    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }]; // 44% - CRÍTICO
-    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }]; // 60% - ALERTA
-    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 20, errors: 10 }]; // 67% - MÉDIO
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 25, errors: 7 }]; // 78% - BOM
-    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 25, errors: 5 }]; // 83% - ALTO
-    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 35, errors: 5 }]; // 87% - ELITE
+    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }];
+    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }];
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 20, errors: 10 }];
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 25, errors: 7 }];
+    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 25, errors: 5 }];
+    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 35, errors: 5 }];
     saveEvents(sample);
   }
 
@@ -752,17 +793,13 @@
           const evDiv = document.createElement('div');
           evDiv.className = 'event';
           
-          // Calcular percentual para exibição
           const hits = ev.hits || 0;
           const errors = ev.errors || 0;
           const total = hits + errors;
           const percentage = total > 0 ? (hits / total) * 100 : 0;
           const level = getLevelName(percentage);
-          
-          // Definir cor baseada no percentual
           const color = getColorByPercentage(percentage);
           
-          // Texto do evento com estatísticas
           let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
           if (total > 0) {
             eventText += ` ✅${hits} ❌${errors} (${percentage.toFixed(0)}% • ${level})`;
@@ -772,12 +809,15 @@
           
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
+          
           // Ajustar cor do texto para maior contraste
           if (percentage >= 65 && percentage <= 69) {
-            evDiv.style.color = '#333'; // texto escuro para fundo amarelo
+            evDiv.style.color = '#333';
+            evDiv.style.textShadow = 'none';
           } else {
             evDiv.style.color = '#fff';
           }
+          
           evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}% | Nível: ${level}`;
           evDiv.onclick = (e) => {
             e.stopPropagation();
@@ -806,33 +846,18 @@
       grid.appendChild(filler);
     }
 
-    // Estatísticas totais com níveis
+    // Estatísticas totais
     const allEvents = Object.values(loadEvents()).flat();
     let totalHits = 0, totalErrors = 0;
-    let criticalCount = 0, alertCount = 0, mediumCount = 0, goodCount = 0, highCount = 0, eliteCount = 0;
-    
     allEvents.forEach(ev => {
-      const hits = ev.hits || 0;
-      const errors = ev.errors || 0;
-      totalHits += hits;
-      totalErrors += errors;
-      const total = hits + errors;
-      if (total > 0) {
-        const percentage = (hits / total) * 100;
-        if (percentage <= 59) criticalCount++;
-        else if (percentage <= 64) alertCount++;
-        else if (percentage <= 69) mediumCount++;
-        else if (percentage <= 79) goodCount++;
-        else if (percentage <= 84) highCount++;
-        else eliteCount++;
-      }
+      totalHits += ev.hits || 0;
+      totalErrors += ev.errors || 0;
     });
-    
     const totalQuestions = totalHits + totalErrors;
     const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
     const overallLevel = getLevelName(parseFloat(overallPercentage));
     
-    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% (${overallLevel}) | 🔴${criticalCount} 🟠${alertCount} 🟡${mediumCount} 🟢${goodCount} 🔵${highCount} 🟣${eliteCount}`;
+    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% (${overallLevel})`;
   }
 
   // ====================== MODAL ======================
@@ -993,7 +1018,6 @@
   cancelBtn.onclick = closeModal;
   deleteBtn.onclick = deleteEventHandler;
 
-  // Event listeners para atualizar display do percentual
   evHits.addEventListener('input', updatePercentageDisplay);
   evErrors.addEventListener('input', updatePercentageDisplay);
 
