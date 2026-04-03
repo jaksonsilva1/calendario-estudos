@@ -120,12 +120,56 @@
       flex-wrap: wrap;
     }
 
-    /* Legenda estilo anterior - mais compacta */
-    .color-legend {
+    /* NOVA LEGENDA DE DESEMPENHO (posição destacada) */
+    .performance-banner {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+
+    .performance-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .stats-numbers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-weight: 500;
+    }
+
+    .stats-numbers span {
+      color: var(--text);
       background: var(--info-bg);
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin-bottom: 16px;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+    }
+
+    .overall-percent {
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: var(--accent-bg, #eef2ff);
+      padding: 4px 12px;
+      border-radius: 40px;
+      color: var(--accent-color, #2563eb);
+    }
+
+    /* LEGENDA DE CORES (estilo clean) */
+    .legend-bar {
+      background: var(--info-bg);
+      border-radius: 14px;
+      padding: 8px 16px;
+      margin-bottom: 18px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -146,7 +190,7 @@
     .legend-colors {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 18px;
     }
 
     .legend-item {
@@ -164,12 +208,14 @@
     .legend-text {
       color: var(--info-text);
       font-size: 11px;
+      font-weight: 500;
     }
 
     .legend-range {
       font-weight: 600;
       font-size: 10px;
       color: var(--muted);
+      margin-left: 2px;
     }
 
     button {
@@ -260,7 +306,6 @@
       max-height: calc(100% - 28px);
     }
 
-    /* Scrollbar dentro dos eventos - mais discreta ainda */
     .events::-webkit-scrollbar {
       width: 3px;
     }
@@ -407,104 +452,25 @@
       background: var(--delete-btn-hover);
     }
 
-    /* Responsividade */
     @media (max-width: 768px) {
-      body {
-        padding: 12px;
-      }
-      
-      .calendar {
-        padding: 12px;
-      }
-      
-      .weekday {
-        font-size: 11px;
-        padding: 4px 0;
-      }
-      
-      .grid {
-        gap: 5px;
-      }
-      
-      .cell {
-        padding: 6px;
-      }
-      
-      .cell .date {
-        font-size: 10px;
-        top: 5px;
-        left: 6px;
-      }
-      
-      .events {
-        margin-top: 22px;
-        gap: 3px;
-      }
-      
-      .event {
-        font-size: 9px;
-        padding: 3px 5px;
-      }
-      
-      .empty {
-        font-size: 10px;
-      }
-      
-      button {
-        padding: 5px 8px;
-        font-size: 12px;
-      }
-
-      .color-legend {
-        padding: 8px 12px;
-      }
-
-      .legend-colors {
-        gap: 10px;
-      }
-
-      .legend-text {
-        font-size: 10px;
-      }
+      body { padding: 12px; }
+      .calendar { padding: 12px; }
+      .weekday { font-size: 11px; }
+      .grid { gap: 5px; }
+      .cell { padding: 6px; }
+      .cell .date { font-size: 10px; top: 5px; left: 6px; }
+      .events { margin-top: 22px; gap: 3px; }
+      .event { font-size: 9px; padding: 3px 5px; }
+      .empty { font-size: 10px; }
+      button { padding: 5px 8px; font-size: 12px; }
+      .legend-colors { gap: 10px; }
+      .performance-stats { flex-direction: column; align-items: flex-start; }
     }
 
     @media (max-width: 600px) {
-      .grid {
-        gap: 4px;
-      }
-      
-      .cell {
-        padding: 4px;
-      }
-      
-      .cell .date {
-        font-size: 9px;
-        top: 4px;
-        left: 5px;
-      }
-      
-      .events {
-        margin-top: 20px;
-        gap: 2px;
-      }
-      
-      .event {
-        font-size: 8px;
-        padding: 2px 4px;
-      }
-      
-      .empty {
-        font-size: 9px;
-      }
-      
-      .weekday {
-        font-size: 10px;
-      }
-
-      .color-legend {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .grid { gap: 4px; }
+      .cell .date { font-size: 9px; }
+      .event { font-size: 8px; padding: 2px 4px; }
     }
   </style>
 </head>
@@ -524,53 +490,39 @@
     </div>
   </header>
 
-  <!-- LEGENDA ESTILO ANTERIOR -->
-  <div class="color-legend">
+  <!-- BANNER DE DESEMPENHO (resumo com indicadores globais) -->
+  <div class="performance-banner" id="performanceBanner">
+    <div class="performance-stats">
+      <div class="stats-numbers" id="globalStats">
+        <!-- Preenchido via js -->
+      </div>
+      <div class="overall-percent" id="globalPercent">
+        --
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGENDA DE CORES (somente faixas de porcentagem) -->
+  <div class="legend-bar">
     <div class="legend-title">
-      🎯 🎨 ESCALA DE DESEMPENHO PROFISSIONAL
+      🎯 ESCALA DE DESEMPENHO
     </div>
     <div class="legend-colors">
       <div class="legend-item">
         <div class="legend-color" style="background-color: #D32F2F;"></div>
-        <div class="legend-text">
-          <strong>🔴 CRÍTICO</strong>
-          <span class="legend-range">(0% – 59%)</span>
-        </div>
+        <div class="legend-text"><strong>🔴 &lt;70%</strong></div>
       </div>
       <div class="legend-item">
-        <div class="legend-color" style="background-color: #F57C00;"></div>
-        <div class="legend-text">
-          <strong>🟠 ALERTA</strong>
-          <span class="legend-range">(60% – 64%)</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #FFF176;"></div>
-        <div class="legend-text">
-          <strong>🟡 MÉDIO</strong>
-          <span class="legend-range">(65% – 69%)</span>
-        </div>
+        <div class="legend-color" style="background-color: #FBC02D;"></div>
+        <div class="legend-text"><strong>🟡 70% – 74,99%</strong></div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #388E3C;"></div>
-        <div class="legend-text">
-          <strong>🟢 BOM</strong>
-          <span class="legend-range">(70% – 79%)</span>
-        </div>
+        <div class="legend-text"><strong>🟢 75% – 78,99%</strong></div>
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background-color: #1976D2;"></div>
-        <div class="legend-text">
-          <strong>🔵 ALTO</strong>
-          <span class="legend-range">(80% – 84%)</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background-color: #7B1FA2;"></div>
-        <div class="legend-text">
-          <strong>🟣 ELITE</strong>
-          <span class="legend-range">(85% – 100%)</span>
-        </div>
+        <div class="legend-text"><strong>🔵 79% – 100%</strong></div>
       </div>
     </div>
   </div>
@@ -622,7 +574,7 @@
   // ====================== DOM elements ======================
   const weekdays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
   const monthLabel = document.getElementById('monthLabel');
-  const grid = document.getElementById('grid');
+  const gridEl = document.getElementById('grid');
   const weekdaysRow = document.getElementById('weekdays');
   const modalBack = document.getElementById('modalBack');
   const modalTitle = document.getElementById('modalTitle');
@@ -638,30 +590,22 @@
   const themeToggle = document.getElementById('themeToggle');
   const importBtn = document.getElementById('importBtn');
   const importFile = document.getElementById('importFile');
+  const globalStatsSpan = document.getElementById('globalStats');
+  const globalPercentSpan = document.getElementById('globalPercent');
 
   let currentDate = new Date();
   let selectedDateKey = null;
   let editingEventId = null;
 
-  // ====================== ESCALA DE CORES ======================
+  // ====================== NOVA ESCALA (cores baseadas nas faixas pedidas) ======================
   function getColorByPercentage(percentage) {
-    if (percentage <= 59) return '#D32F2F';  // CRÍTICO
-    if (percentage <= 64) return '#F57C00';  // ALERTA
-    if (percentage <= 69) return '#FFF176';  // MÉDIO
-    if (percentage <= 79) return '#388E3C';  // BOM
-    if (percentage <= 84) return '#1976D2';  // ALTO
-    return '#7B1FA2';                        // ELITE (85-100%)
+    if (percentage < 70) return '#D32F2F';       // vermelho (<70%)
+    if (percentage <= 74.99) return '#FBC02D';   // amarelo (70% – 74.99%)
+    if (percentage <= 78.99) return '#388E3C';   // verde (75% – 78.99%)
+    return '#1976D2';                            // azul (79% – 100%)
   }
 
-  function getLevelName(percentage) {
-    if (percentage <= 59) return 'CRÍTICO';
-    if (percentage <= 64) return 'ALERTA';
-    if (percentage <= 69) return 'MÉDIO';
-    if (percentage <= 79) return 'BOM';
-    if (percentage <= 84) return 'ALTO';
-    return 'ELITE';
-  }
-
+  // Sem nomes descritivos (só porcentagem)
   function calculatePercentage(hits, errors) {
     const total = hits + errors;
     if (total === 0) return 0;
@@ -673,10 +617,7 @@
     const errors = parseInt(evErrors.value) || 0;
     const percentage = calculatePercentage(hits, errors);
     const color = getColorByPercentage(percentage);
-    const level = getLevelName(percentage);
-    
-    percentageDisplay.innerHTML = `📊 Percentual: ${percentage.toFixed(1)}% (${level})`;
-    
+    percentageDisplay.innerHTML = `📊 Percentual: ${percentage.toFixed(1)}%`;
     percentageDisplay.style.backgroundColor = color + '20';
     percentageDisplay.style.color = color;
     percentageDisplay.style.borderLeft = `4px solid ${color}`;
@@ -720,7 +661,7 @@
     localStorage.setItem('calEvents', JSON.stringify(eventsObj));
   }
 
-  // Dados iniciais com exemplos variados
+  // Dados iniciais com exemplos (para demonstrar as cores)
   if (!localStorage.getItem('calEvents')) {
     const sample = {};
     const today = new Date();
@@ -728,13 +669,13 @@
     const m = today.getMonth();
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
-    
-    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }];
-    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }];
-    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 20, errors: 10 }];
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 25, errors: 7 }];
-    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 25, errors: 5 }];
-    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 35, errors: 5 }];
+    // valores com percentuais variados
+    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }]; // 44.4% <70 vermelho
+    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }]; // 60% <70 vermelho
+    sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 28, errors: 12 }]; // 70% exato (amarelo)
+    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 30, errors: 10 }]; // 75% verde
+    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 40, errors: 10 }]; // 80% azul
+    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 85, errors: 15 }]; // 85% azul
     saveEvents(sample);
   }
 
@@ -746,8 +687,34 @@
   function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
   function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
 
+  // Atualiza o banner de desempenho global (igual ao formato pedido: 📊 X tópico(s) | ✅ Y acertos | ❌ Z erros | 📈 W%)
+  function updateGlobalPerformanceBanner() {
+    const eventsMap = loadEvents();
+    const allEvents = Object.values(eventsMap).flat();
+    let totalTopics = allEvents.length;
+    let totalHits = 0, totalErrors = 0;
+    allEvents.forEach(ev => {
+      totalHits += ev.hits || 0;
+      totalErrors += ev.errors || 0;
+    });
+    const totalQuestions = totalHits + totalErrors;
+    const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
+    let percentColor = getColorByPercentage(parseFloat(overallPercentage));
+    globalStatsSpan.innerHTML = `
+      <span>📊 ${totalTopics} tópico(s)</span>
+      <span>✅ ${totalHits} acertos</span>
+      <span>❌ ${totalErrors} erros</span>
+    `;
+    globalPercentSpan.innerHTML = `📈 ${overallPercentage}%`;
+    globalPercentSpan.style.backgroundColor = percentColor + '30';
+    globalPercentSpan.style.color = percentColor;
+    globalPercentSpan.style.borderRadius = '40px';
+    // também preenche o rodapé (info)
+    info.innerHTML = `📊 ${totalTopics} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}%`;
+  }
+
   function render() {
-    grid.innerHTML = '';
+    gridEl.innerHTML = '';
     monthLabel.textContent = formatMonthYear(currentDate);
     const firstDay = startOfMonth(currentDate);
     const lastDay = endOfMonth(currentDate);
@@ -766,7 +733,7 @@
       dateSpan.className = 'date';
       dateSpan.textContent = dayNum;
       emptyCell.appendChild(dateSpan);
-      grid.appendChild(emptyCell);
+      gridEl.appendChild(emptyCell);
     }
 
     // dias do mês
@@ -796,29 +763,28 @@
           const hits = ev.hits || 0;
           const errors = ev.errors || 0;
           const total = hits + errors;
-          const percentage = total > 0 ? (hits / total) * 100 : 0;
-          const level = getLevelName(percentage);
+          let percentage = total > 0 ? (hits / total) * 100 : 0;
           const color = getColorByPercentage(percentage);
           
+          // Exibe APENAS a porcentagem dentro do evento (sem nomes como "bom, alto, médio")
           let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
           if (total > 0) {
-            eventText += ` ✅${hits} ❌${errors} (${percentage.toFixed(0)}% • ${level})`;
+            eventText += ` (${percentage.toFixed(0)}%)`;
           } else {
-            eventText += ` (📊 sem dados)`;
+            eventText += ` (0%)`;
           }
           
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
-          
-          // Ajustar cor do texto para maior contraste
-          if (percentage >= 65 && percentage <= 69) {
-            evDiv.style.color = '#333';
+          // Ajuste contraste para amarelo
+          if (percentage >= 70 && percentage <= 74.99) {
+            evDiv.style.color = '#1e1e1e';
             evDiv.style.textShadow = 'none';
           } else {
             evDiv.style.color = '#fff';
           }
           
-          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}% | Nível: ${level}`;
+          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}%`;
           evDiv.onclick = (e) => {
             e.stopPropagation();
             openModalForEdit(key, ev.id);
@@ -833,31 +799,21 @@
           openModalForAdd(key);
         }
       };
-      grid.appendChild(cell);
+      gridEl.appendChild(cell);
     }
 
     // completar grid
-    const currentCells = grid.children.length;
+    const currentCells = gridEl.children.length;
     const remaining = (7 - (currentCells % 7)) % 7;
     for (let i = 0; i < remaining; i++) {
       const filler = document.createElement('div');
       filler.className = 'cell';
       filler.style.opacity = '0.2';
-      grid.appendChild(filler);
+      gridEl.appendChild(filler);
     }
 
-    // Estatísticas totais
-    const allEvents = Object.values(loadEvents()).flat();
-    let totalHits = 0, totalErrors = 0;
-    allEvents.forEach(ev => {
-      totalHits += ev.hits || 0;
-      totalErrors += ev.errors || 0;
-    });
-    const totalQuestions = totalHits + totalErrors;
-    const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
-    const overallLevel = getLevelName(parseFloat(overallPercentage));
-    
-    info.innerHTML = `📊 ${allEvents.length} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% (${overallLevel})`;
+    // Atualiza banner global e rodapé
+    updateGlobalPerformanceBanner();
   }
 
   // ====================== MODAL ======================
