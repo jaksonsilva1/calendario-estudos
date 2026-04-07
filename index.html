@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-  <title>Calendário de Estudos GMM • Escala Profissional</title>
+  <title>Calendário de Estudos GMM • Simulados Ponderados</title>
   <style>
     :root {
       --bg: #f7fafc;
@@ -28,7 +28,8 @@
       --scrollbar-track: #e2e8f0;
       --scrollbar-thumb: #cbd5e1;
       --scrollbar-thumb-hover: #94a3b8;
-      --legend-bg: #f1f5f9;
+      --sidebar-bg: #ffffff;
+      --simulado-card: #fef3c7;
     }
 
     body.dark {
@@ -54,14 +55,14 @@
       --scrollbar-track: #1e293b;
       --scrollbar-thumb: #334155;
       --scrollbar-thumb-hover: #475569;
-      --legend-bg: #1e293b;
+      --sidebar-bg: #1e293b;
+      --simulado-card: #2d2a1e;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    /* ====================== SCROLLBAR PERSONALIZADA ====================== */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -77,16 +78,6 @@
       border-radius: 3px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--scrollbar-thumb-hover);
-    }
-
-    /* Para Firefox */
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-    }
-
     body {
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: var(--bg);
@@ -96,9 +87,230 @@
       transition: background 0.2s, color 0.2s;
     }
 
-    .wrap {
-      max-width: 1200px;
+    .app-container {
+      display: flex;
+      gap: 24px;
+      max-width: 1400px;
       margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 420px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
+      padding: 20px 16px;
+      transition: background 0.2s;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+
+    .sidebar-section h3 {
+      font-size: 1.1rem;
+      margin: 0 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 3px solid #0f9d58;
+      padding-left: 12px;
+    }
+
+    .simulados-stats {
+      background: var(--stats-bg);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 10px;
+      background: var(--card);
+      border-radius: 12px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .simulados-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .simulado-card {
+      background: var(--simulado-card);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      border-left: 4px solid #0f9d58;
+    }
+
+    .simulado-card:hover {
+      transform: translateX(-4px);
+    }
+
+    .simulado-title {
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .simulado-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .simulado-percent {
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .progress-bar-bg {
+      background: var(--border-light);
+      border-radius: 12px;
+      height: 4px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 12px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .form-simulado {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-simulado input {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+
+    .materia-item {
+      background: var(--info-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .materia-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .remove-materia {
+      background: var(--delete-btn-bg);
+      color: var(--delete-btn-text);
+      border: none;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .materia-fields {
+      display: grid;
+      grid-template-columns: 1fr 0.8fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .materia-fields input {
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .acertos-container {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .acertos-container input {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .btn-sidebar {
+      background: #0f9d58;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: filter 0.2s;
+      width: 100%;
+    }
+
+    .btn-sidebar-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border: 1px solid var(--btn-secondary-border);
+    }
+
+    .preview-stats {
+      background: var(--stats-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      min-width: 0;
     }
 
     header {
@@ -122,15 +334,31 @@
       flex-wrap: wrap;
     }
 
-    /* BANNER DE DESEMPENHO (resumo com indicadores globais) */
+    button {
+      background: #0f9d58;
+      color: #fff;
+      border: 0;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .small {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border: 1px solid var(--btn-secondary-border);
+      padding: 6px 10px;
+    }
+
+    /* Performance Banner */
     .performance-banner {
       background: var(--card);
       border-radius: 16px;
       padding: 12px 18px;
       margin-bottom: 20px;
       border: 1px solid var(--border-light);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      transition: all 0.2s;
     }
 
     .performance-stats {
@@ -160,29 +388,63 @@
     .overall-percent {
       font-weight: 700;
       font-size: 1.2rem;
-      background: var(--accent-bg, #eef2ff);
       padding: 4px 12px;
       border-radius: 40px;
-      color: var(--accent-color, #2563eb);
     }
 
-    button {
-      background: var(--accent, #0f9d58);
-      color: #fff;
-      border: 0;
-      padding: 6px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.1s;
-      font-size: 13px;
+    /* Weekly Performance */
+    .weekly-performance {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
     }
 
-    .small {
-      background: var(--btn-secondary-bg);
-      color: var(--btn-secondary-text);
-      border: 1px solid var(--btn-secondary-border);
-      padding: 6px 10px;
+    .weekly-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    .weekly-summary {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .weekly-summary span {
+      background: var(--info-bg);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .weekly-days {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .week-day-card {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      padding: 8px;
+      background: var(--info-bg);
+      border-radius: 12px;
+    }
+
+    .week-day-name {
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .week-day-percent {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin: 4px 0;
     }
 
     .calendar {
@@ -190,7 +452,6 @@
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-      transition: background 0.2s;
     }
 
     .weekdays {
@@ -226,11 +487,12 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .cell:hover {
       background: var(--cell-hover);
-      border-color: var(--accent, #0f9d58);
+      border-color: #0f9d58;
       transform: scale(1.02);
       z-index: 1;
     }
@@ -252,19 +514,6 @@
       flex: 1;
       overflow-y: auto;
       max-height: calc(100% - 28px);
-    }
-
-    .events::-webkit-scrollbar {
-      width: 3px;
-    }
-    
-    .events::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    
-    .events::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border-radius: 2px;
     }
 
     .event {
@@ -308,6 +557,7 @@
       gap: 8px;
     }
 
+    /* Modal */
     .modal-back {
       position: fixed;
       inset: 0;
@@ -324,63 +574,48 @@
       padding: 20px;
       border-radius: 16px;
       width: 90%;
-      max-width: 420px;
-      box-shadow: 0 20px 35px rgba(2, 6, 23, 0.4);
-      transition: background 0.2s;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
     }
 
     .modal h3 {
       margin: 0 0 12px 0;
-      font-size: 1.2rem;
-      color: var(--text);
     }
 
     .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    label {
+    .form-row label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
       font-weight: 500;
-      font-size: 0.85rem;
-      color: var(--text);
     }
 
-    input[type="text"],
-    input[type="number"],
-    select,
-    textarea {
-      padding: 8px 10px;
+    .form-row input {
+      width: 100%;
+      padding: 8px;
       border-radius: 8px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
     }
 
     .stats-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .stat-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      gap: 12px;
+      margin-bottom: 12px;
     }
 
     .percentage {
-      margin-top: 8px;
       padding: 10px;
       background: var(--stats-bg);
       border-radius: 8px;
       text-align: center;
-      font-size: 14px;
-      font-weight: bold;
+      margin-bottom: 12px;
     }
 
     .modal-actions {
@@ -390,140 +625,222 @@
       margin-top: 12px;
     }
 
-    #deleteBtn {
+    #deleteStudyBtn {
       background: var(--delete-btn-bg);
       color: var(--delete-btn-text);
       border: 1px solid var(--delete-btn-text);
     }
 
-    #deleteBtn:hover {
-      background: var(--delete-btn-hover);
-    }
-
-    @media (max-width: 768px) {
-      body { padding: 12px; }
-      .calendar { padding: 12px; }
-      .weekday { font-size: 11px; }
-      .grid { gap: 5px; }
-      .cell { padding: 6px; }
-      .cell .date { font-size: 10px; top: 5px; left: 6px; }
-      .events { margin-top: 22px; gap: 3px; }
-      .event { font-size: 9px; padding: 3px 5px; }
-      .empty { font-size: 10px; }
-      button { padding: 5px 8px; font-size: 12px; }
-    }
-
-    @media (max-width: 600px) {
-      .grid { gap: 4px; }
-      .cell .date { font-size: 9px; }
-      .event { font-size: 8px; padding: 2px 4px; }
+    @media (max-width: 900px) {
+      .app-container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        position: static;
+        order: 2;
+        max-height: none;
+      }
+      .main-content {
+        order: 1;
+      }
+      .weekly-days {
+        flex-wrap: wrap;
+      }
+      .week-day-card {
+        min-width: 70px;
+      }
     }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>📚 Calendário de Estudos GMM • Escala Profissional</h1>
-    <div class="controls">
-      <button id="themeToggle" class="small">🌙 Modo escuro</button>
-      <button id="prev" title="Mês anterior">◀</button>
-      <div class="small" id="monthLabel"></div>
-      <button id="next" title="Próximo mês">▶</button>
-      <button id="today">📅 Hoje</button>
-      <button id="export">📤 Exportar</button>
-      <button id="importBtn" class="small">📂 Importar</button>
-      <input type="file" id="importFile" accept=".json" style="display: none;" />
-    </div>
-  </header>
-
-  <!-- BANNER DE DESEMPENHO (resumo com indicadores globais) -->
-  <div class="performance-banner" id="performanceBanner">
-    <div class="performance-stats">
-      <div class="stats-numbers" id="globalStats">
-        <!-- Preenchido via js -->
+<div class="app-container">
+  <!-- SIDEBAR - Simulados Ponderados -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>🎯 Estatísticas dos Simulados</h3>
+      <div class="simulados-stats">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalSimulados">0</div>
+            <div class="stat-label">Simulados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mediaGeralSimulados">0%</div>
+            <div class="stat-label">Média Geral</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalQuestoesSimulados">0</div>
+            <div class="stat-label">Total Questões</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalAcertosSimulados">0</div>
+            <div class="stat-label">Total Acertos</div>
+          </div>
+        </div>
       </div>
-      <div class="overall-percent" id="globalPercent">
-        --
+    </div>
+
+    <div class="sidebar-section">
+      <h3>📋 Meus Simulados</h3>
+      <div class="simulados-list" id="simuladosList">
+        <div style="text-align:center; color:var(--muted); padding:20px;">Carregando...</div>
       </div>
     </div>
-  </div>
 
-  <div class="calendar">
-    <div class="weekdays" id="weekdays"></div>
-    <div class="grid" id="grid"></div>
-    <div class="footer">
-      <div>💡 Clique no dia para adicionar / clique no evento para editar</div>
-      <div id="info"></div>
+    <div class="sidebar-section">
+      <h3>➕ Novo Simulado Ponderado</h3>
+      <div class="form-simulado">
+        <input type="text" id="simuladoTitle" placeholder="Título do Simulado *">
+        <div id="materiasList"></div>
+        <button id="addMateriaBtn" class="btn-sidebar btn-sidebar-secondary">+ Adicionar Matéria</button>
+        <div class="preview-stats" id="previewStats">
+          <strong>📊 Prévia</strong>
+          <p>📚 Questões: <span id="previewTotalQuestoes">0</span> | ✅ Acertos: <span id="previewTotalAcertos">0</span></p>
+          <p>📈 Média ponderada: <span id="previewMediaPonderada">0</span>%</p>
+        </div>
+        <button id="saveSimuladoBtn" class="btn-sidebar">💾 Salvar Simulado</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <header>
+      <h1>📚 Calendário de Estudos Diários</h1>
+      <div class="controls">
+        <button id="themeToggle" class="small">🌙 Modo escuro</button>
+        <button id="prev">◀</button>
+        <div class="small" id="monthLabel"></div>
+        <button id="next">▶</button>
+        <button id="today">📅 Hoje</button>
+        <button id="export">📤 Exportar</button>
+        <button id="importBtn" class="small">📂 Importar</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;" />
+      </div>
+    </header>
+
+    <!-- DESEMPENHO GERAL -->
+    <div class="performance-banner">
+      <div class="performance-stats">
+        <div class="stats-numbers" id="globalStats"></div>
+        <div class="overall-percent" id="globalPercent">--</div>
+      </div>
+    </div>
+
+    <!-- DESEMPENHO ÚLTIMOS 7 DIAS -->
+    <div class="weekly-performance">
+      <div class="weekly-title">📊 Desempenho dos últimos 7 dias</div>
+      <div class="weekly-summary" id="weeklySummary"></div>
+      <div class="weekly-days" id="weeklyDays"></div>
+    </div>
+
+    <div class="calendar">
+      <div class="weekdays" id="weekdays"></div>
+      <div class="grid" id="grid"></div>
+      <div class="footer">
+        <div>💡 Clique no dia para adicionar | Clique no evento para editar/excluir</div>
+        <div id="info"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-back" id="modalBack">
-  <div class="modal" role="dialog" aria-modal="true">
-    <h3 id="modalTitle">Adicionar Evento</h3>
+<!-- Modal de Edição de Estudo Diário -->
+<div class="modal-back" id="studyModal">
+  <div class="modal">
+    <h3 id="studyModalTitle">✏️ Editar Estudo</h3>
     <div class="form-row">
-      <label>📌 Título *</label>
-      <input id="evTitle" type="text" placeholder="Ex: DP - Teoria do crime" autocomplete="off" />
+      <label>📌 Título</label>
+      <input id="studyTitle" type="text">
     </div>
     <div class="form-row">
-      <label>⏰ Horário (opcional)</label>
-      <input id="evTime" type="text" placeholder="Ex: 19:00-21:00" />
+      <label>⏰ Horário</label>
+      <input id="studyTime" type="text" placeholder="Ex: 19:00">
     </div>
     <div class="stats-group">
-      <div class="stat-field">
-        <label>✅ Número de Acertos</label>
-        <input id="evHits" type="number" min="0" value="0" />
+      <div class="form-row">
+        <label>✅ Acertos</label>
+        <input id="studyHits" type="number" min="0" value="0">
       </div>
-      <div class="stat-field">
-        <label>❌ Número de Erros</label>
-        <input id="evErrors" type="number" min="0" value="0" />
+      <div class="form-row">
+        <label>❌ Erros</label>
+        <input id="studyErrors" type="number" min="0" value="0">
       </div>
     </div>
-    <div class="percentage" id="percentageDisplay">
-      📊 Percentual: 0%
-    </div>
+    <div class="percentage" id="studyPercentage">📊 Percentual: 0%</div>
     <div class="modal-actions">
-      <button id="deleteBtn" class="small" style="display:none">🗑️ Excluir</button>
-      <button id="cancelBtn" class="small">Cancelar</button>
-      <button id="saveBtn">💾 Salvar</button>
+      <button id="deleteStudyBtn" class="small">🗑️ Excluir</button>
+      <button id="cancelStudyBtn" class="small">Cancelar</button>
+      <button id="saveStudyBtn">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Visualização do Simulado -->
+<div class="modal-back" id="simuladoModal">
+  <div class="modal">
+    <h3 id="simuladoModalTitle">Detalhes do Simulado</h3>
+    <div id="simuladoModalContent"></div>
+    <div class="modal-actions">
+      <button id="closeSimuladoBtn" class="small">Fechar</button>
+      <button id="deleteSimuladoModalBtn" class="small" style="background:var(--delete-btn-bg); color:var(--delete-btn-text);">🗑️ Excluir</button>
     </div>
   </div>
 </div>
 
 <script>
-  // ====================== DOM elements ======================
+  // ====================== DOM ELEMENTOS ======================
   const weekdays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
   const monthLabel = document.getElementById('monthLabel');
   const gridEl = document.getElementById('grid');
   const weekdaysRow = document.getElementById('weekdays');
-  const modalBack = document.getElementById('modalBack');
-  const modalTitle = document.getElementById('modalTitle');
-  const evTitle = document.getElementById('evTitle');
-  const evTime = document.getElementById('evTime');
-  const evHits = document.getElementById('evHits');
-  const evErrors = document.getElementById('evErrors');
-  const percentageDisplay = document.getElementById('percentageDisplay');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const deleteBtn = document.getElementById('deleteBtn');
-  const info = document.getElementById('info');
   const themeToggle = document.getElementById('themeToggle');
   const importBtn = document.getElementById('importBtn');
   const importFile = document.getElementById('importFile');
-  const globalStatsSpan = document.getElementById('globalStats');
-  const globalPercentSpan = document.getElementById('globalPercent');
+  
+  // Modal estudo
+  const studyModal = document.getElementById('studyModal');
+  const studyModalTitle = document.getElementById('studyModalTitle');
+  const studyTitle = document.getElementById('studyTitle');
+  const studyTime = document.getElementById('studyTime');
+  const studyHits = document.getElementById('studyHits');
+  const studyErrors = document.getElementById('studyErrors');
+  const studyPercentage = document.getElementById('studyPercentage');
+  const deleteStudyBtn = document.getElementById('deleteStudyBtn');
+  const cancelStudyBtn = document.getElementById('cancelStudyBtn');
+  const saveStudyBtn = document.getElementById('saveStudyBtn');
+  
+  // Modal simulado
+  const simuladoModal = document.getElementById('simuladoModal');
+  const simuladoModalTitle = document.getElementById('simuladoModalTitle');
+  const simuladoModalContent = document.getElementById('simuladoModalContent');
+  const closeSimuladoBtn = document.getElementById('closeSimuladoBtn');
+  const deleteSimuladoModalBtn = document.getElementById('deleteSimuladoModalBtn');
+  
+  // Elementos simulados sidebar
+  const materiasListDiv = document.getElementById('materiasList');
+  const addMateriaBtn = document.getElementById('addMateriaBtn');
+  const saveSimuladoBtn = document.getElementById('saveSimuladoBtn');
+  const simuladoTitleInput = document.getElementById('simuladoTitle');
+  const simuladosListDiv = document.getElementById('simuladosList');
+  const totalSimuladosSpan = document.getElementById('totalSimulados');
+  const mediaGeralSimuladosSpan = document.getElementById('mediaGeralSimulados');
+  const totalQuestoesSimuladosSpan = document.getElementById('totalQuestoesSimulados');
+  const totalAcertosSimuladosSpan = document.getElementById('totalAcertosSimulados');
 
   let currentDate = new Date();
-  let selectedDateKey = null;
-  let editingEventId = null;
+  let currentEditingStudy = null;
+  let currentEditingDateKey = null;
+  let currentViewingSimuladoId = null;
+  let materias = [];
 
-  // ====================== ESCALA DE CORES ======================
+  // ====================== FUNÇÕES AUXILIARES ======================
   function getColorByPercentage(percentage) {
-    if (percentage < 70) return '#D32F2F';       // vermelho (<70%)
-    if (percentage <= 74.99) return '#FBC02D';   // amarelo (70% – 74.99%)
-    if (percentage <= 78.99) return '#388E3C';   // verde (75% – 78.99%)
-    return '#1976D2';                            // azul (79% – 100%)
+    if (percentage < 70) return '#D32F2F';
+    if (percentage <= 74.99) return '#FBC02D';
+    if (percentage <= 78.99) return '#388E3C';
+    return '#1976D2';
   }
 
   function calculatePercentage(hits, errors) {
@@ -532,57 +849,64 @@
     return (hits / total) * 100;
   }
 
-  function updatePercentageDisplay() {
-    const hits = parseInt(evHits.value) || 0;
-    const errors = parseInt(evErrors.value) || 0;
-    const percentage = calculatePercentage(hits, errors);
-    const color = getColorByPercentage(percentage);
-    percentageDisplay.innerHTML = `📊 Percentual: ${percentage.toFixed(1)}%`;
-    percentageDisplay.style.backgroundColor = color + '20';
-    percentageDisplay.style.color = color;
-    percentageDisplay.style.borderLeft = `4px solid ${color}`;
+  function calculateWeightedAverage(materiasArray) {
+    let totalPesoQuestao = 0;
+    let totalAcertosPonderados = 0;
+    materiasArray.forEach(m => {
+      const peso = parseFloat(m.peso) || 0;
+      const questoes = parseInt(m.questoes) || 0;
+      const acertos = parseInt(m.acertos) || 0;
+      totalPesoQuestao += peso * questoes;
+      totalAcertosPonderados += acertos * peso;
+    });
+    if (totalPesoQuestao === 0) return 0;
+    return (totalAcertosPonderados / totalPesoQuestao) * 100;
   }
 
-  // ====================== TEMA ======================
-  function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      document.body.classList.remove('dark');
-      themeToggle.textContent = '🌙 Modo escuro';
-    } else {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      themeToggle.textContent = '☀️ Modo claro';
-    }
+  function calculateSimuladoStats(materiasArray) {
+    let totalQuestoes = 0, totalAcertos = 0, totalErros = 0;
+    materiasArray.forEach(m => {
+      const questoes = parseInt(m.questoes) || 0;
+      const acertos = parseInt(m.acertos) || 0;
+      totalQuestoes += questoes;
+      totalAcertos += acertos;
+      totalErros += (questoes - acertos);
+    });
+    const mediaPonderada = calculateWeightedAverage(materiasArray);
+    const percentualSimples = totalQuestoes > 0 ? (totalAcertos / totalQuestoes) * 100 : 0;
+    return { totalQuestoes, totalAcertos, totalErros, mediaPonderada, percentualSimples };
   }
 
-  function toggleTheme() {
-    if (document.body.classList.contains('dark')) {
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      themeToggle.textContent = '🌙 Modo escuro';
-    } else {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      themeToggle.textContent = '☀️ Modo claro';
-    }
+  function updateStudyPercentage() {
+    const hits = parseInt(studyHits.value) || 0;
+    const errors = parseInt(studyErrors.value) || 0;
+    const percent = calculatePercentage(hits, errors);
+    const color = getColorByPercentage(percent);
+    studyPercentage.innerHTML = `📊 Percentual: ${percent.toFixed(1)}%`;
+    studyPercentage.style.backgroundColor = color + '20';
+    studyPercentage.style.color = color;
   }
-  themeToggle.addEventListener('click', toggleTheme);
 
   // ====================== STORAGE ======================
-  function loadEvents() {
+  function loadDailyEvents() {
     try {
-      return JSON.parse(localStorage.getItem('calEvents') || '{}');
-    } catch(e) {
-      return {};
-    }
+      return JSON.parse(localStorage.getItem('dailyEvents') || '{}');
+    } catch(e) { return {}; }
   }
-  function saveEvents(eventsObj) {
-    localStorage.setItem('calEvents', JSON.stringify(eventsObj));
+  function saveDailyEvents(eventsObj) {
+    localStorage.setItem('dailyEvents', JSON.stringify(eventsObj));
+  }
+  function loadSimulados() {
+    try {
+      return JSON.parse(localStorage.getItem('simulados') || '[]');
+    } catch(e) { return []; }
+  }
+  function saveSimulados(simuladosArray) {
+    localStorage.setItem('simulados', JSON.stringify(simuladosArray));
   }
 
-  // Dados iniciais com exemplos
-  if (!localStorage.getItem('calEvents')) {
+  // Dados iniciais
+  if (!localStorage.getItem('dailyEvents')) {
     const sample = {};
     const today = new Date();
     const y = today.getFullYear();
@@ -592,25 +916,29 @@
     sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }];
     sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }];
     sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 28, errors: 12 }];
-    sample[key(10)] = [{ id: Date.now()+4, title: 'CF - Art. 5º', time: '19:00', hits: 30, errors: 10 }];
-    sample[key(13)] = [{ id: Date.now()+5, title: 'ADM - Licitações', time: '14:30', hits: 40, errors: 10 }];
-    sample[key(15)] = [{ id: Date.now()+6, title: 'REVISÃO GERAL', time: '', hits: 85, errors: 15 }];
-    saveEvents(sample);
+    saveDailyEvents(sample);
+  }
+  
+  if (!localStorage.getItem('simulados')) {
+    const sampleSimulados = [
+      {
+        id: Date.now(),
+        title: 'Simulado GMM - Direito Penal',
+        date: new Date().toISOString().split('T')[0],
+        materias: [
+          { nome: 'Teoria do Crime', peso: 2, questoes: 10, acertos: 8 },
+          { nome: 'Penas e Medidas', peso: 1.5, questoes: 8, acertos: 6 },
+          { nome: 'Parte Geral', peso: 1, questoes: 12, acertos: 9 }
+        ]
+      }
+    ];
+    saveSimulados(sampleSimulados);
   }
 
-  // ====================== RENDER ======================
-  function formatMonthYear(d) {
-    return d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, l => l.toUpperCase());
-  }
-
-  function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
-  function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
-
-  // Atualiza o banner de desempenho global
-  function updateGlobalPerformanceBanner() {
-    const eventsMap = loadEvents();
+  // ====================== DESEMPENHO GERAL E SEMANAL ======================
+  function updatePerformanceBanner() {
+    const eventsMap = loadDailyEvents();
     const allEvents = Object.values(eventsMap).flat();
-    let totalTopics = allEvents.length;
     let totalHits = 0, totalErrors = 0;
     allEvents.forEach(ev => {
       totalHits += ev.hits || 0;
@@ -618,29 +946,81 @@
     });
     const totalQuestions = totalHits + totalErrors;
     const overallPercentage = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
-    let percentColor = getColorByPercentage(parseFloat(overallPercentage));
-    globalStatsSpan.innerHTML = `
-      <span>📊 ${totalTopics} tópico(s)</span>
+    const color = getColorByPercentage(parseFloat(overallPercentage));
+    
+    document.getElementById('globalStats').innerHTML = `
+      <span>📚 ${allEvents.length} estudo(s)</span>
       <span>✅ ${totalHits} acertos</span>
       <span>❌ ${totalErrors} erros</span>
     `;
-    globalPercentSpan.innerHTML = `📈 ${overallPercentage}%`;
-    globalPercentSpan.style.backgroundColor = percentColor + '30';
-    globalPercentSpan.style.color = percentColor;
-    globalPercentSpan.style.borderRadius = '40px';
-    info.innerHTML = `📊 ${totalTopics} tópico(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}%`;
+    const globalPercent = document.getElementById('globalPercent');
+    globalPercent.innerHTML = `📈 ${overallPercentage}%`;
+    globalPercent.style.backgroundColor = color + '30';
+    globalPercent.style.color = color;
+    document.getElementById('info').innerHTML = `📚 ${allEvents.length} estudo(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}%`;
   }
 
-  function render() {
+  function updateWeeklyPerformance() {
+    const eventsMap = loadDailyEvents();
+    const today = new Date();
+    const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const weeklyData = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const dayEvents = eventsMap[key] || [];
+      let hits = 0, errors = 0;
+      dayEvents.forEach(ev => {
+        hits += ev.hits || 0;
+        errors += ev.errors || 0;
+      });
+      const total = hits + errors;
+      const percent = total > 0 ? (hits / total) * 100 : 0;
+      weeklyData.push({ day: daysOfWeek[d.getDay()], date: d.getDate(), hits, errors, percent });
+    }
+    
+    let totalHitsWeek = 0, totalErrorsWeek = 0;
+    weeklyData.forEach(d => { totalHitsWeek += d.hits; totalErrorsWeek += d.errors; });
+    const totalWeek = totalHitsWeek + totalErrorsWeek;
+    const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
+    
+    document.getElementById('weeklySummary').innerHTML = `
+      <span>✅ ${totalHitsWeek} acertos</span>
+      <span>❌ ${totalErrorsWeek} erros</span>
+      <span>📈 Média: ${overallWeekPercent}%</span>
+    `;
+    
+    const weeklyDaysDiv = document.getElementById('weeklyDays');
+    weeklyDaysDiv.innerHTML = '';
+    weeklyData.forEach(day => {
+      const color = getColorByPercentage(day.percent);
+      const card = document.createElement('div');
+      card.className = 'week-day-card';
+      card.innerHTML = `
+        <div class="week-day-name">${day.day}</div>
+        <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
+        <div style="font-size:10px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
+      `;
+      weeklyDaysDiv.appendChild(card);
+    });
+  }
+
+  // ====================== RENDER CALENDÁRIO ======================
+  function formatMonthYear(d) {
+    return d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, l => l.toUpperCase());
+  }
+
+  function renderCalendar() {
     gridEl.innerHTML = '';
     monthLabel.textContent = formatMonthYear(currentDate);
-    const firstDay = startOfMonth(currentDate);
-    const lastDay = endOfMonth(currentDate);
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const startWeekday = firstDay.getDay();
     const totalDays = lastDay.getDate();
-    const eventsMap = loadEvents();
+    const eventsMap = loadDailyEvents();
 
-    // células anteriores
     const prevMonthLastDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
     for (let i = 0; i < startWeekday; i++) {
       const dayNum = prevMonthLastDate - startWeekday + 1 + i;
@@ -654,7 +1034,6 @@
       gridEl.appendChild(emptyCell);
     }
 
-    // dias do mês
     for (let d = 1; d <= totalDays; d++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
@@ -671,52 +1050,33 @@
       if (dayEvents.length === 0) {
         const hint = document.createElement('div');
         hint.className = 'empty';
-        hint.textContent = '+';
+        hint.textContent = '+ Adicionar';
         eventsContainer.appendChild(hint);
       } else {
         dayEvents.forEach(ev => {
           const evDiv = document.createElement('div');
           evDiv.className = 'event';
-          
           const hits = ev.hits || 0;
           const errors = ev.errors || 0;
           const total = hits + errors;
           let percentage = total > 0 ? (hits / total) * 100 : 0;
           const color = getColorByPercentage(percentage);
-          
           let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
-          if (total > 0) {
-            eventText += ` (${percentage.toFixed(0)}%)`;
-          } else {
-            eventText += ` (0%)`;
-          }
-          
+          if (total > 0) eventText += ` (${percentage.toFixed(0)}%)`;
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
-          // Ajuste contraste para amarelo
-          
-            evDiv.style.color = '#fff';
-          
-          
-          evDiv.title = `Editar: ${ev.title} | Acertos: ${hits} | Erros: ${errors} | Percentual: ${percentage.toFixed(1)}%`;
           evDiv.onclick = (e) => {
             e.stopPropagation();
-            openModalForEdit(key, ev.id);
+            openStudyModal(key, ev.id);
           };
           eventsContainer.appendChild(evDiv);
         });
       }
-
       cell.appendChild(eventsContainer);
-      cell.onclick = (e) => {
-        if (e.target === cell || e.target.classList.contains('cell') || e.target === dateSpan || e.target === eventsContainer) {
-          openModalForAdd(key);
-        }
-      };
+      cell.onclick = () => addNewStudy(key);
       gridEl.appendChild(cell);
     }
 
-    // completar grid
     const currentCells = gridEl.children.length;
     const remaining = (7 - (currentCells % 7)) % 7;
     for (let i = 0; i < remaining; i++) {
@@ -726,184 +1086,351 @@
       gridEl.appendChild(filler);
     }
 
-    updateGlobalPerformanceBanner();
+    updatePerformanceBanner();
+    updateWeeklyPerformance();
   }
 
-  // ====================== MODAL ======================
-  function openModalForAdd(dateKey) {
-    selectedDateKey = dateKey;
-    editingEventId = null;
-    modalTitle.textContent = '➕ Adicionar Evento de Estudo';
-    evTitle.value = '';
-    evTime.value = '';
-    evHits.value = '0';
-    evErrors.value = '0';
-    deleteBtn.style.display = 'none';
-    updatePercentageDisplay();
-    modalBack.style.display = 'flex';
-  }
-
-  function openModalForEdit(dateKey, eventId) {
-    const eventsMap = loadEvents();
+  // ====================== CRUD ESTUDOS DIÁRIOS ======================
+  function addNewStudy(dateKey) {
+    const title = prompt('Título do estudo:');
+    if (!title) return;
+    const time = prompt('Horário (opcional):', '');
+    const hits = parseInt(prompt('Acertos:', '0')) || 0;
+    const errors = parseInt(prompt('Erros:', '0')) || 0;
+    
+    const eventsMap = loadDailyEvents();
     const dayEvents = eventsMap[dateKey] || [];
-    const eventToEdit = dayEvents.find(ev => ev.id === eventId);
-    if (!eventToEdit) return;
-
-    selectedDateKey = dateKey;
-    editingEventId = eventId;
-    modalTitle.textContent = '✏️ Editar Evento de Estudo';
-    evTitle.value = eventToEdit.title;
-    evTime.value = eventToEdit.time || '';
-    evHits.value = eventToEdit.hits || 0;
-    evErrors.value = eventToEdit.errors || 0;
-    deleteBtn.style.display = 'inline-block';
-    updatePercentageDisplay();
-    modalBack.style.display = 'flex';
+    dayEvents.push({
+      id: Date.now(),
+      title: title,
+      time: time || '',
+      hits: hits,
+      errors: errors
+    });
+    eventsMap[dateKey] = dayEvents;
+    saveDailyEvents(eventsMap);
+    renderCalendar();
   }
 
-  function closeModal() {
-    modalBack.style.display = 'none';
-    selectedDateKey = null;
-    editingEventId = null;
+  function openStudyModal(dateKey, eventId) {
+    const eventsMap = loadDailyEvents();
+    const dayEvents = eventsMap[dateKey] || [];
+    const event = dayEvents.find(ev => ev.id === eventId);
+    if (!event) return;
+    
+    currentEditingStudy = event;
+    currentEditingDateKey = dateKey;
+    
+    studyModalTitle.textContent = '✏️ Editar Estudo';
+    studyTitle.value = event.title;
+    studyTime.value = event.time || '';
+    studyHits.value = event.hits || 0;
+    studyErrors.value = event.errors || 0;
+    updateStudyPercentage();
+    studyModal.style.display = 'flex';
   }
 
-  function saveEventHandler() {
-    const title = evTitle.value.trim();
-    if (!title) {
-      alert('Por favor, informe um título para o evento.');
+  function saveStudy() {
+    if (!currentEditingStudy || !currentEditingDateKey) return;
+    
+    const eventsMap = loadDailyEvents();
+    const dayEvents = eventsMap[currentEditingDateKey] || [];
+    const index = dayEvents.findIndex(ev => ev.id === currentEditingStudy.id);
+    
+    if (index !== -1) {
+      dayEvents[index] = {
+        ...currentEditingStudy,
+        title: studyTitle.value,
+        time: studyTime.value,
+        hits: parseInt(studyHits.value) || 0,
+        errors: parseInt(studyErrors.value) || 0
+      };
+      eventsMap[currentEditingDateKey] = dayEvents;
+      saveDailyEvents(eventsMap);
+    }
+    
+    closeStudyModal();
+    renderCalendar();
+  }
+
+  function deleteStudy() {
+    if (!currentEditingStudy || !currentEditingDateKey) return;
+    if (!confirm('Excluir este estudo?')) return;
+    
+    const eventsMap = loadDailyEvents();
+    const dayEvents = eventsMap[currentEditingDateKey] || [];
+    const newDayEvents = dayEvents.filter(ev => ev.id !== currentEditingStudy.id);
+    
+    if (newDayEvents.length === 0) {
+      delete eventsMap[currentEditingDateKey];
+    } else {
+      eventsMap[currentEditingDateKey] = newDayEvents;
+    }
+    
+    saveDailyEvents(eventsMap);
+    closeStudyModal();
+    renderCalendar();
+  }
+
+  function closeStudyModal() {
+    studyModal.style.display = 'none';
+    currentEditingStudy = null;
+    currentEditingDateKey = null;
+  }
+
+  // ====================== SIMULADOS ======================
+  function renderMateriasForm() {
+    materiasListDiv.innerHTML = '';
+    materias.forEach((m, idx) => {
+      const div = document.createElement('div');
+      div.className = 'materia-item';
+      div.innerHTML = `
+        <div class="materia-header">
+          <span>📚 ${m.nome || 'Nova Matéria'}</span>
+          <button class="remove-materia" data-idx="${idx}">✗</button>
+        </div>
+        <div class="materia-fields">
+          <input type="text" placeholder="Matéria" value="${m.nome || ''}" data-field="nome" data-idx="${idx}">
+          <input type="number" step="0.1" placeholder="Peso" value="${m.peso || 1}" data-field="peso" data-idx="${idx}">
+          <input type="number" placeholder="Questões" value="${m.questoes || 0}" data-field="questoes" data-idx="${idx}">
+        </div>
+        <div class="acertos-container">
+          <input type="number" placeholder="Acertos" value="${m.acertos || 0}" data-field="acertos" data-idx="${idx}">
+          <span>/ ${m.questoes || 0}</span>
+        </div>
+      `;
+      materiasListDiv.appendChild(div);
+    });
+    
+    document.querySelectorAll('.remove-materia').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        materias.splice(parseInt(btn.dataset.idx), 1);
+        renderMateriasForm();
+        updatePreview();
+      });
+    });
+    
+    document.querySelectorAll('[data-field]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const idx = parseInt(input.dataset.idx);
+        const field = input.dataset.field;
+        materias[idx][field] = input.value;
+        if (field === 'questoes' && materias[idx].acertos > parseInt(input.value)) {
+          materias[idx].acertos = parseInt(input.value);
+        }
+        renderMateriasForm();
+        updatePreview();
+      });
+    });
+  }
+
+  function updatePreview() {
+    const stats = calculateSimuladoStats(materias);
+    document.getElementById('previewTotalQuestoes').textContent = stats.totalQuestoes;
+    document.getElementById('previewTotalAcertos').textContent = stats.totalAcertos;
+    document.getElementById('previewMediaPonderada').textContent = stats.mediaPonderada.toFixed(1);
+  }
+
+  function renderSimuladosList() {
+    const simulados = loadSimulados();
+    let totalSim = simulados.length;
+    let totalQuestoes = 0, totalAcertos = 0, somaMedias = 0;
+    
+    simulados.forEach(sim => {
+      const stats = calculateSimuladoStats(sim.materias);
+      totalQuestoes += stats.totalQuestoes;
+      totalAcertos += stats.totalAcertos;
+      somaMedias += stats.mediaPonderada;
+    });
+    
+    totalSimuladosSpan.textContent = totalSim;
+    mediaGeralSimuladosSpan.textContent = totalSim > 0 ? (somaMedias / totalSim).toFixed(1) + '%' : '0%';
+    totalQuestoesSimuladosSpan.textContent = totalQuestoes;
+    totalAcertosSimuladosSpan.textContent = totalAcertos;
+    
+    simuladosListDiv.innerHTML = '';
+    if (simulados.length === 0) {
+      simuladosListDiv.innerHTML = '<div style="text-align:center; padding:20px;">Nenhum simulado</div>';
       return;
     }
-
-    const hits = parseInt(evHits.value) || 0;
-    const errors = parseInt(evErrors.value) || 0;
-
-    const eventsMap = loadEvents();
-    const dayEvents = eventsMap[selectedDateKey] || [];
-
-    if (editingEventId) {
-      const target = dayEvents.find(ev => ev.id === editingEventId);
-      if (target) {
-        target.title = title;
-        target.time = evTime.value;
-        target.hits = hits;
-        target.errors = errors;
-      } else {
-        alert('Evento não encontrado para edição.');
-        closeModal();
-        return;
-      }
-    } else {
-      const newId = Date.now();
-      dayEvents.push({
-        id: newId,
-        title: title,
-        time: evTime.value,
-        hits: hits,
-        errors: errors
-      });
-    }
-
-    eventsMap[selectedDateKey] = dayEvents;
-    saveEvents(eventsMap);
-    closeModal();
-    render();
+    
+    simulados.sort((a,b) => new Date(b.date) - new Date(a.date));
+    simulados.forEach(sim => {
+      const stats = calculateSimuladoStats(sim.materias);
+      const percent = stats.mediaPonderada;
+      const color = getColorByPercentage(percent);
+      const card = document.createElement('div');
+      card.className = 'simulado-card';
+      card.innerHTML = `
+        <div class="simulado-title">🎯 ${sim.title}</div>
+        <div class="simulado-meta">
+          <span>📅 ${sim.date}</span>
+          <span>📚 ${stats.totalQuestoes} q</span>
+        </div>
+        <div class="simulado-percent" style="color:${color}">${percent.toFixed(1)}%</div>
+        <div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%; background:${color};"></div></div>
+      `;
+      card.onclick = () => openSimuladoModal(sim.id);
+      simuladosListDiv.appendChild(card);
+    });
   }
 
-  function deleteEventHandler() {
-    if (!editingEventId) return;
-    if (!confirm('Tem certeza que deseja excluir este evento?')) return;
-
-    const eventsMap = loadEvents();
-    const dayEvents = eventsMap[selectedDateKey] || [];
-    const index = dayEvents.findIndex(ev => ev.id === editingEventId);
-    if (index !== -1) {
-      dayEvents.splice(index, 1);
-      if (dayEvents.length === 0) {
-        delete eventsMap[selectedDateKey];
-      } else {
-        eventsMap[selectedDateKey] = dayEvents;
-      }
-      saveEvents(eventsMap);
-    }
-    closeModal();
-    render();
+  function openSimuladoModal(simuladoId) {
+    const simulados = loadSimulados();
+    const simulado = simulados.find(s => s.id === simuladoId);
+    if (!simulado) return;
+    
+    currentViewingSimuladoId = simuladoId;
+    simuladoModalTitle.textContent = `📊 ${simulado.title}`;
+    const stats = calculateSimuladoStats(simulado.materias);
+    
+    let materiasHtml = '<div style="max-height:300px; overflow-y:auto;">';
+    simulado.materias.forEach(m => {
+      const percentMat = m.questoes > 0 ? (m.acertos / m.questoes * 100).toFixed(1) : 0;
+      materiasHtml += `
+        <div style="background:var(--info-bg); border-radius:8px; padding:10px; margin-bottom:8px;">
+          <strong>${m.nome}</strong><br>
+          Peso: ${m.peso} | Questões: ${m.questoes} | Acertos: ${m.acertos} (${percentMat}%)
+        </div>
+      `;
+    });
+    materiasHtml += '</div>';
+    
+    simuladoModalContent.innerHTML = `
+      <p><strong>📅 Data:</strong> ${simulado.date}</p>
+      <p><strong>📚 Total Questões:</strong> ${stats.totalQuestoes}</p>
+      <p><strong>✅ Acertos:</strong> ${stats.totalAcertos} | ❌ Erros: ${stats.totalErros}</p>
+      <p><strong>📈 Média Ponderada:</strong> ${stats.mediaPonderada.toFixed(1)}%</p>
+      <hr>
+      ${materiasHtml}
+    `;
+    simuladoModal.style.display = 'flex';
   }
 
-  // ====================== IMPORTAR/EXPORTAR ======================
-  function importFromJSON(file) {
+  function deleteSimuladoFromModal() {
+    if (!currentViewingSimuladoId) return;
+    if (!confirm('Excluir este simulado?')) return;
+    
+    let simulados = loadSimulados();
+    simulados = simulados.filter(s => s.id !== currentViewingSimuladoId);
+    saveSimulados(simulados);
+    closeSimuladoModal();
+    renderSimuladosList();
+  }
+
+  function closeSimuladoModal() {
+    simuladoModal.style.display = 'none';
+    currentViewingSimuladoId = null;
+  }
+
+  function saveNewSimulado() {
+    const title = simuladoTitleInput.value.trim();
+    if (!title) { alert('Digite o título'); return; }
+    if (materias.length === 0) { alert('Adicione matérias'); return; }
+    for (let m of materias) {
+      if (!m.nome) { alert('Todas matérias precisam de nome'); return; }
+      if (parseInt(m.questoes) <= 0) { alert(`"${m.nome}" precisa de questões`); return; }
+    }
+    
+    const simulados = loadSimulados();
+    simulados.push({
+      id: Date.now(),
+      title: title,
+      date: new Date().toISOString().split('T')[0],
+      materias: JSON.parse(JSON.stringify(materias))
+    });
+    saveSimulados(simulados);
+    
+    simuladoTitleInput.value = '';
+    materias = [];
+    renderMateriasForm();
+    updatePreview();
+    renderSimuladosList();
+    alert('✅ Simulado salvo!');
+  }
+
+  // ====================== IMPORTAÇÃO/EXPORTAÇÃO ======================
+  function exportAllData() {
+    const data = { dailyEvents: loadDailyEvents(), simulados: loadSimulados() };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dados_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  
+  function importAllData(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
       try {
-        const importedData = JSON.parse(e.target.result);
-        if (typeof importedData === 'object' && importedData !== null) {
-          saveEvents(importedData);
-          render();
-          alert('✅ Importação concluída!');
-        } else {
-          throw new Error('Formato inválido');
-        }
-      } catch (err) {
-        alert('❌ Arquivo inválido. Use um JSON gerado pelo calendário.');
-      }
+        const data = JSON.parse(e.target.result);
+        if (data.dailyEvents) saveDailyEvents(data.dailyEvents);
+        if (data.simulados) saveSimulados(data.simulados);
+        renderCalendar();
+        renderSimuladosList();
+        alert('✅ Importado!');
+      } catch(err) { alert('Arquivo inválido'); }
     };
     reader.readAsText(file);
   }
 
-  importBtn.addEventListener('click', () => {
-    importFile.click();
+  // ====================== EVENTOS ======================
+  document.getElementById('prev').onclick = () => { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); renderCalendar(); };
+  document.getElementById('next').onclick = () => { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1); renderCalendar(); };
+  document.getElementById('today').onclick = () => { currentDate = new Date(); renderCalendar(); };
+  document.getElementById('export').onclick = exportAllData;
+  importBtn.addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', (e) => { if (e.target.files.length) importAllData(e.target.files[0]); importFile.value = ''; });
+  
+  saveStudyBtn.onclick = saveStudy;
+  cancelStudyBtn.onclick = closeStudyModal;
+  deleteStudyBtn.onclick = deleteStudy;
+  studyHits.addEventListener('input', updateStudyPercentage);
+  studyErrors.addEventListener('input', updateStudyPercentage);
+  
+  closeSimuladoBtn.onclick = closeSimuladoModal;
+  deleteSimuladoModalBtn.onclick = deleteSimuladoFromModal;
+  saveSimuladoBtn.addEventListener('click', saveNewSimulado);
+  addMateriaBtn.addEventListener('click', () => {
+    materias.push({ nome: '', peso: 1, questoes: 0, acertos: 0 });
+    renderMateriasForm();
+    updatePreview();
   });
-  importFile.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      importFromJSON(e.target.files[0]);
+  
+  function initTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') { document.body.classList.remove('dark'); themeToggle.textContent = '🌙 Modo escuro'; }
+    else { document.body.classList.add('dark'); themeToggle.textContent = '☀️ Modo claro'; }
+  }
+  function toggleTheme() {
+    if (document.body.classList.contains('dark')) {
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      themeToggle.textContent = '🌙 Modo escuro';
+    } else {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = '☀️ Modo claro';
     }
-    importFile.value = '';
-  });
-
-  // ====================== EVENTOS DOS BOTÕES ======================
-  document.getElementById('prev').onclick = () => {
-    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-    render();
-  };
-  document.getElementById('next').onclick = () => {
-    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-    render();
-  };
-  document.getElementById('today').onclick = () => {
-    currentDate = new Date();
-    render();
-  };
-  document.getElementById('export').onclick = () => {
-    const data = localStorage.getItem('calEvents') || '{}';
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `estudos_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  saveBtn.onclick = saveEventHandler;
-  cancelBtn.onclick = closeModal;
-  deleteBtn.onclick = deleteEventHandler;
-
-  evHits.addEventListener('input', updatePercentageDisplay);
-  evErrors.addEventListener('input', updatePercentageDisplay);
-
-  modalBack.onclick = (e) => {
-    if (e.target === modalBack) closeModal();
-  };
-
-  // ====================== INICIALIZAÇÃO ======================
+  }
+  themeToggle.addEventListener('click', toggleTheme);
+  
+  studyModal.onclick = (e) => { if (e.target === studyModal) closeStudyModal(); };
+  simuladoModal.onclick = (e) => { if (e.target === simuladoModal) closeSimuladoModal(); };
+  
   weekdays.forEach(day => {
     const el = document.createElement('div');
     el.className = 'weekday';
     el.textContent = day;
     weekdaysRow.appendChild(el);
   });
-
+  
   initTheme();
-  render();
+  renderCalendar();
+  renderSimuladosList();
+  updatePreview();
 </script>
 </body>
 </html>
