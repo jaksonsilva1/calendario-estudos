@@ -32,6 +32,8 @@
       --sidebar-bg: #ffffff;
       --simulado-card: #fef3c7;
       --success: #0f9d58;
+      --toast-bg: #1e293b;
+      --toast-text: #ffffff;
     }
 
     body.dark {
@@ -59,6 +61,8 @@
       --scrollbar-thumb-hover: #475569;
       --sidebar-bg: #1e293b;
       --simulado-card: #2d2a1e;
+      --toast-bg: #0f172a;
+      --toast-text: #e2e8f0;
     }
 
     * {
@@ -98,7 +102,6 @@
       transition: gap 0.2s;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 420px;
       flex-shrink: 0;
@@ -122,7 +125,6 @@
       visibility: hidden;
     }
 
-    /* Botões de toggle */
     .toggle-buttons {
       display: flex;
       gap: 8px;
@@ -349,7 +351,6 @@
       font-size: 13px;
     }
 
-    /* MAIN CONTENT */
     .main-content {
       flex: 1;
       min-width: 0;
@@ -403,7 +404,6 @@
       padding: 6px 10px;
     }
 
-    /* Performance Banner */
     .performance-banner {
       background: var(--card);
       border-radius: 16px;
@@ -443,7 +443,6 @@
       border-radius: 40px;
     }
 
-    /* Weekly Performance */
     .weekly-performance {
       background: var(--card);
       border-radius: 16px;
@@ -608,7 +607,6 @@
       gap: 8px;
     }
 
-    /* Modal */
     .modal-back {
       position: fixed;
       inset: 0;
@@ -689,6 +687,54 @@
       background: var(--delete-btn-hover);
     }
 
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--toast-bg);
+      color: var(--toast-text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1100;
+      animation: slideIn 0.3s ease;
+      border-left: 4px solid #0f9d58;
+    }
+    
+    .toast.error {
+      border-left-color: #dc2626;
+    }
+    
+    .toast.warning {
+      border-left-color: #f59e0b;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
     @media (max-width: 900px) {
       .app-container {
         flex-direction: column;
@@ -718,7 +764,6 @@
 </head>
 <body>
 <div class="app-container">
-  <!-- SIDEBAR - Simulados Ponderados -->
   <aside class="sidebar" id="sidebar">
     <div class="toggle-buttons">
       <button id="toggleSidebarBtn" class="icon-btn">
@@ -776,7 +821,6 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <div class="main-content">
     <header>
       <h1><i class="fas fa-calendar-alt"></i> Calendário de Estudos Diários</h1>
@@ -797,7 +841,6 @@
       </div>
     </header>
 
-    <!-- DESEMPENHO GERAL -->
     <div class="performance-banner">
       <div class="performance-stats">
         <div class="stats-numbers" id="globalStats"></div>
@@ -805,7 +848,6 @@
       </div>
     </div>
 
-    <!-- DESEMPENHO ÚLTIMOS 7 DIAS -->
     <div class="weekly-performance">
       <div class="weekly-title"><i class="fas fa-chart-line"></i> Desempenho dos últimos 7 dias</div>
       <div class="weekly-summary" id="weeklySummary"></div>
@@ -823,7 +865,6 @@
   </div>
 </div>
 
-<!-- Modal de Edição/Adição de Estudo Diário -->
 <div class="modal-back" id="studyModal">
   <div class="modal">
     <h3 id="studyModalTitle"><i class="fas fa-edit"></i> Adicionar Estudo</h3>
@@ -856,7 +897,6 @@
   </div>
 </div>
 
-<!-- Modal de Edição/Visualização do Simulado -->
 <div class="modal-back" id="simuladoModal">
   <div class="modal" style="max-width: 700px;">
     <h3 id="simuladoModalTitle"><i class="fas fa-chart-bar"></i> Detalhes do Simulado</h3>
@@ -888,7 +928,6 @@
   const showSidebarBtn = document.getElementById('showSidebarBtn');
   const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
   
-  // Modal estudo
   const studyModal = document.getElementById('studyModal');
   const studyModalTitle = document.getElementById('studyModalTitle');
   const studyTitle = document.getElementById('studyTitle');
@@ -900,7 +939,6 @@
   const cancelStudyBtn = document.getElementById('cancelStudyBtn');
   const saveStudyBtn = document.getElementById('saveStudyBtn');
   
-  // Modal simulado
   const simuladoModal = document.getElementById('simuladoModal');
   const simuladoModalTitle = document.getElementById('simuladoModalTitle');
   const simuladoModalContent = document.getElementById('simuladoModalContent');
@@ -910,7 +948,6 @@
   const deleteSimuladoModalBtn = document.getElementById('deleteSimuladoModalBtn');
   const saveSimuladoEditBtn = document.getElementById('saveSimuladoEditBtn');
   
-  // Elementos simulados sidebar
   const materiasListDiv = document.getElementById('materiasList');
   const addMateriaBtn = document.getElementById('addMateriaBtn');
   const saveSimuladoBtn = document.getElementById('saveSimuladoBtn');
@@ -927,6 +964,28 @@
   let currentViewingSimulado = null;
   let materias = [];
   let isEditingMode = false;
+
+  // ====================== TOAST NOTIFICATION ======================
+  function showToast(message, type = 'success') {
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+      existingToast.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => existingToast.remove(), 300);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+    toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 3000);
+  }
 
   // ====================== FUNÇÕES AUXILIARES ======================
   function getColorByPercentage(percentage) {
@@ -1218,7 +1277,7 @@
   function saveStudy() {
     if (!currentEditingDateKey) return;
     const title = studyTitle.value.trim();
-    if (!title) { alert('Título é obrigatório'); return; }
+    if (!title) { showToast('Título é obrigatório', 'error'); return; }
     const hits = parseInt(studyHits.value) || 0;
     const errors = parseInt(studyErrors.value) || 0;
     const eventsMap = loadDailyEvents();
@@ -1237,6 +1296,7 @@
     saveDailyEvents(eventsMap);
     closeStudyModal();
     renderCalendar();
+    showToast(currentEditingStudy ? 'Estudo atualizado!' : 'Estudo adicionado!');
   }
 
   function deleteStudy() {
@@ -1250,6 +1310,7 @@
     saveDailyEvents(eventsMap);
     closeStudyModal();
     renderCalendar();
+    showToast('Estudo excluído!', 'warning');
   }
 
   function closeStudyModal() {
@@ -1270,7 +1331,7 @@
           <button class="remove-materia" data-idx="${idx}">✗</button>
         </div>
         <div class="materia-fields">
-          <input type="text" placeholder="Matéria" value="${m.nome || ''}" data-field="nome" data-idx="${idx}">
+          <input type="text" placeholder="Matéria" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-field="nome" data-idx="${idx}">
           <input type="number" step="0.1" placeholder="Peso" value="${m.peso || 1}" data-field="peso" data-idx="${idx}">
           <input type="number" placeholder="Questões" value="${m.questoes || 0}" data-field="questoes" data-idx="${idx}">
         </div>
@@ -1339,7 +1400,7 @@
       const card = document.createElement('div');
       card.className = 'simulado-card';
       card.innerHTML = `
-        <div class="simulado-title"><i class="fas fa-trophy"></i> ${sim.title}</div>
+        <div class="simulado-title"><i class="fas fa-trophy"></i> ${sim.title.replace(/</g, '&lt;')}</div>
         <div class="simulado-meta">
           <span><i class="fas fa-calendar"></i> ${sim.date}</span>
           <span><i class="fas fa-question-circle"></i> ${stats.totalQuestoes} q</span>
@@ -1357,7 +1418,7 @@
     const simulado = simulados.find(s => s.id === simuladoId);
     if (!simulado) return;
     currentViewingSimulado = JSON.parse(JSON.stringify(simulado));
-    simuladoModalTitle.innerHTML = `<i class="fas fa-chart-bar"></i> ${simulado.title}`;
+    simuladoModalTitle.innerHTML = `<i class="fas fa-chart-bar"></i> ${simulado.title.replace(/</g, '&lt;')}`;
     isEditingMode = false;
     updateSimuladoDisplay();
     simuladoModal.style.display = 'flex';
@@ -1378,7 +1439,7 @@
       currentViewingSimulado.materias.forEach(m => {
         const percentMat = m.questoes > 0 ? (m.acertos / m.questoes * 100).toFixed(1) : 0;
         materiasHtml += `<div style="background:var(--info-bg); border-radius:8px; padding:10px; margin-bottom:8px;">
-          <strong><i class="fas fa-book"></i> ${m.nome}</strong><br>
+          <strong><i class="fas fa-book"></i> ${(m.nome || '').replace(/</g, '&lt;')}</strong><br>
           <i class="fas fa-weight-hanging"></i> Peso: ${m.peso} | 
           <i class="fas fa-question-circle"></i> Questões: ${m.questoes} | 
           <i class="fas fa-check-circle"></i> Acertos: ${m.acertos} (${percentMat}%)
@@ -1402,31 +1463,31 @@
       deleteSimuladoModalBtn.style.display = 'none';
       saveSimuladoEditBtn.style.display = 'block';
       
-      let html = `
+      simuladoEditFields.innerHTML = `
         <div class="form-row">
           <label><i class="fas fa-tag"></i> Título do Simulado</label>
-          <input type="text" id="editSimTitulo" value="${currentViewingSimulado.title.replace(/"/g, '&quot;')}" style="width:100%;">
+          <input type="text" id="editSimTitulo" value="${currentViewingSimulado.title.replace(/"/g, '&quot;').replace(/</g, '&lt;')}" style="width:100%;">
         </div>
         <div id="editMateriasContainer"></div>
         <button type="button" id="addEditMateriaBtn" class="btn-sidebar-secondary" style="margin-top: 10px;">
           <i class="fas fa-plus"></i> Adicionar Matéria
         </button>
       `;
-      simuladoEditFields.innerHTML = html;
       
       function renderEditMaterias() {
         const container = document.getElementById('editMateriasContainer');
+        if (!container) return;
         container.innerHTML = '';
         currentViewingSimulado.materias.forEach((m, idx) => {
           const div = document.createElement('div');
           div.className = 'materia-item';
           div.innerHTML = `
             <div class="materia-header">
-              <span>📚 ${m.nome || 'Nova Matéria'}</span>
+              <span>📚 ${(m.nome || 'Nova Matéria').replace(/</g, '&lt;')}</span>
               <button class="remove-edit-materia" data-idx="${idx}">✗</button>
             </div>
             <div class="materia-fields">
-              <input type="text" placeholder="Matéria" value="${m.nome || ''}" data-edit-field="nome" data-idx="${idx}">
+              <input type="text" placeholder="Matéria" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-edit-field="nome" data-idx="${idx}">
               <input type="number" step="0.1" placeholder="Peso" value="${m.peso || 1}" data-edit-field="peso" data-idx="${idx}">
               <input type="number" placeholder="Questões" value="${m.questoes || 0}" data-edit-field="questoes" data-idx="${idx}">
             </div>
@@ -1439,8 +1500,10 @@
         });
         
         document.querySelectorAll('.remove-edit-materia').forEach(btn => {
-          btn.onclick = () => {
-            currentViewingSimulado.materias.splice(parseInt(btn.dataset.idx), 1);
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const idx = parseInt(btn.dataset.idx);
+            currentViewingSimulado.materias.splice(idx, 1);
             renderEditMaterias();
           };
         });
@@ -1448,7 +1511,7 @@
         document.querySelectorAll('[data-edit-field]').forEach(inp => {
           inp.onchange = (e) => {
             const idx = parseInt(inp.dataset.idx);
-            const field = inp.dataset.field;
+            const field = inp.dataset.editField;
             currentViewingSimulado.materias[idx][field] = inp.value;
             if (field === 'questoes' && currentViewingSimulado.materias[idx].acertos > parseInt(inp.value)) {
               currentViewingSimulado.materias[idx].acertos = parseInt(inp.value);
@@ -1459,10 +1522,13 @@
       }
       
       renderEditMaterias();
-      document.getElementById('addEditMateriaBtn').onclick = () => {
-        currentViewingSimulado.materias.push({ nome: '', peso: 1, questoes: 0, acertos: 0 });
-        renderEditMaterias();
-      };
+      const addBtn = document.getElementById('addEditMateriaBtn');
+      if (addBtn) {
+        addBtn.onclick = () => {
+          currentViewingSimulado.materias.push({ nome: '', peso: 1, questoes: 0, acertos: 0 });
+          renderEditMaterias();
+        };
+      }
     }
   }
 
@@ -1473,9 +1539,24 @@
 
   function saveSimuladoEdit() {
     if (!currentViewingSimulado) return;
-    const newTitle = document.getElementById('editSimTitulo')?.value.trim();
-    if (!newTitle) { alert('Título obrigatório'); return; }
+    const titleInput = document.getElementById('editSimTitulo');
+    if (!titleInput) return;
+    const newTitle = titleInput.value.trim();
+    if (!newTitle) { showToast('Título obrigatório', 'error'); return; }
     currentViewingSimulado.title = newTitle;
+    
+    // Validar matérias
+    for (let i = 0; i < currentViewingSimulado.materias.length; i++) {
+      const m = currentViewingSimulado.materias[i];
+      if (!m.nome || m.nome.trim() === '') {
+        showToast(`Matéria ${i+1} precisa de um nome`, 'error');
+        return;
+      }
+      if (parseInt(m.questoes) <= 0) {
+        showToast(`"${m.nome}" precisa ter pelo menos 1 questão`, 'error');
+        return;
+      }
+    }
     
     let simulados = loadSimulados();
     const index = simulados.findIndex(s => s.id === currentViewingSimulado.id);
@@ -1485,7 +1566,7 @@
     }
     closeSimuladoModal();
     renderSimuladosList();
-    alert('✅ Simulado atualizado com sucesso!');
+    showToast('✅ Simulado atualizado com sucesso!');
   }
 
   function deleteSimuladoFromModal() {
@@ -1496,7 +1577,7 @@
     saveSimulados(simulados);
     closeSimuladoModal();
     renderSimuladosList();
-    alert('🗑️ Simulado excluído!');
+    showToast('🗑️ Simulado excluído!', 'warning');
   }
 
   function closeSimuladoModal() {
@@ -1507,11 +1588,12 @@
 
   function saveNewSimulado() {
     const title = simuladoTitleInput.value.trim();
-    if (!title) { alert('Digite o título'); return; }
-    if (materias.length === 0) { alert('Adicione matérias'); return; }
-    for (let m of materias) {
-      if (!m.nome) { alert('Todas matérias precisam de nome'); return; }
-      if (parseInt(m.questoes) <= 0) { alert(`"${m.nome}" precisa de questões`); return; }
+    if (!title) { showToast('Digite o título do simulado', 'error'); return; }
+    if (materias.length === 0) { showToast('Adicione pelo menos uma matéria', 'error'); return; }
+    for (let i = 0; i < materias.length; i++) {
+      const m = materias[i];
+      if (!m.nome || m.nome.trim() === '') { showToast(`Matéria ${i+1} precisa de um nome`, 'error'); return; }
+      if (parseInt(m.questoes) <= 0) { showToast(`"${m.nome}" precisa de pelo menos 1 questão`, 'error'); return; }
     }
     const simulados = loadSimulados();
     simulados.push({
@@ -1526,7 +1608,7 @@
     renderMateriasForm();
     updatePreview();
     renderSimuladosList();
-    alert('✅ Simulado salvo!');
+    showToast('✅ Simulado salvo com sucesso!');
   }
 
   // ====================== IMPORTAÇÃO/EXPORTAÇÃO ======================
@@ -1539,6 +1621,7 @@
     a.download = `dados_${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast('Dados exportados com sucesso!');
   }
   
   function importAllData(file) {
@@ -1550,8 +1633,8 @@
         if (data.simulados) saveSimulados(data.simulados);
         renderCalendar();
         renderSimuladosList();
-        alert('✅ Dados importados com sucesso!');
-      } catch(err) { alert('Arquivo inválido'); }
+        showToast('✅ Dados importados com sucesso!');
+      } catch(err) { showToast('Arquivo inválido', 'error'); }
     };
     reader.readAsText(file);
   }
@@ -1560,9 +1643,17 @@
   function toggleSidebar(show) {
     if (show) {
       sidebar.classList.remove('collapsed');
+      localStorage.setItem('sidebarCollapsed', 'false');
     } else {
       sidebar.classList.add('collapsed');
+      localStorage.setItem('sidebarCollapsed', 'true');
     }
+  }
+  
+  // Restaurar estado da sidebar
+  const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+  if (savedSidebarState === 'true') {
+    sidebar.classList.add('collapsed');
   }
   
   showSidebarBtn.onclick = () => toggleSidebar(true);
