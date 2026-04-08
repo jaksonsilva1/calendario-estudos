@@ -770,7 +770,6 @@
       background: var(--delete-btn-hover);
     }
 
-    /* Estilo para os eventos no modal do dia */
     .day-event-item {
       background: var(--day-modal-event);
       border-radius: 12px;
@@ -1373,7 +1372,7 @@
         const errors = ev.errors || 0;
         const total = hits + errors;
         const percent = total > 0 ? (hits / total) * 100 : 0;
-        const color = getColorByPercentage(percent);
+        const color = total === 0 ? '#9CA3AF' : getColorByPercentage(percent);
         
         eventsHtml += `
           <div class="day-event-item" style="border-left-color: ${color};" data-event-id="${ev.id}">
@@ -1481,7 +1480,7 @@
     const weeklyDaysDiv = document.getElementById('weeklyDays');
     weeklyDaysDiv.innerHTML = '';
     weeklyData.forEach(day => {
-      const color = getColorByPercentage(day.percent);
+      const color = day.hits + day.errors === 0 ? '#9CA3AF' : getColorByPercentage(day.percent);
       const card = document.createElement('div');
       card.className = 'week-day-card';
       card.innerHTML = `
@@ -1626,7 +1625,12 @@
           const errors = ev.errors || 0;
           const total = hits + errors;
           let percentage = total > 0 ? (hits / total) * 100 : 0;
-          const color = getColorByPercentage(percentage);
+          let color;
+          if (total === 0) {
+            color = '#9CA3AF'; // cinza para eventos sem questões resolvidas
+          } else {
+            color = getColorByPercentage(percentage);
+          }
           let eventText = ev.title;
           if (ev.time) eventText = `${ev.time} ${eventText}`;
           if (total > 0) eventText += ` (${percentage.toFixed(0)}%)`;
