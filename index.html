@@ -34,6 +34,10 @@
       --success: #0f9d58;
       --toast-bg: #1e293b;
       --toast-text: #ffffff;
+      --context-menu-bg: #ffffff;
+      --context-menu-hover: #f1f5f9;
+      --context-menu-border: #e5e7eb;
+      --day-modal-event: #f8fafc;
     }
 
     body.dark {
@@ -63,6 +67,10 @@
       --simulado-card: #2d2a1e;
       --toast-bg: #0f172a;
       --toast-text: #e2e8f0;
+      --context-menu-bg: #1e293b;
+      --context-menu-hover: #334155;
+      --context-menu-border: #334155;
+      --day-modal-event: #0f172a;
     }
 
     * {
@@ -168,6 +176,10 @@
       padding-left: 12px;
     }
 
+    .sidebar-section h3 i {
+      color: #0f9d58;
+    }
+
     .simulados-stats {
       background: var(--stats-bg);
       border-radius: 16px;
@@ -187,6 +199,11 @@
       padding: 10px;
       background: var(--card);
       border-radius: 12px;
+    }
+
+    .stat-card i {
+      color: #0f9d58;
+      margin-right: 4px;
     }
 
     .stat-value {
@@ -224,6 +241,10 @@
       margin-bottom: 6px;
     }
 
+    .simulado-title i {
+      color: #f59e0b;
+    }
+
     .simulado-meta {
       font-size: 0.7rem;
       color: var(--muted);
@@ -259,8 +280,8 @@
     }
 
     .form-simulado input {
-      padding: 10px 12px;
-      border-radius: 12px;
+      padding: 8px 10px;
+      border-radius: 10px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text);
@@ -269,72 +290,74 @@
 
     .materia-item {
       background: var(--info-bg);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 8px;
     }
 
     .materia-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       font-weight: 600;
+      font-size: 0.85rem;
     }
 
     .remove-materia {
       background: var(--delete-btn-bg);
       color: var(--delete-btn-text);
       border: none;
-      padding: 4px 8px;
-      border-radius: 8px;
+      padding: 2px 6px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 11px;
+      font-size: 10px;
     }
 
     .materia-fields {
       display: grid;
-      grid-template-columns: 1fr 0.8fr 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
+      grid-template-columns: 1fr 0.7fr 0.7fr;
+      gap: 6px;
+      margin-bottom: 6px;
     }
 
     .materia-fields input {
-      padding: 6px 8px;
-      border-radius: 8px;
+      padding: 4px 6px;
+      border-radius: 6px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .acertos-container {
       display: flex;
       gap: 6px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .acertos-container input {
       flex: 1;
-      padding: 6px 8px;
-      border-radius: 8px;
+      padding: 4px 6px;
+      border-radius: 6px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .btn-sidebar {
       background: #0f9d58;
       color: white;
       border: none;
-      padding: 10px;
+      padding: 8px;
       border-radius: 40px;
       font-weight: 600;
       cursor: pointer;
       margin-top: 6px;
       transition: filter 0.2s;
       width: 100%;
+      font-size: 13px;
     }
 
     .btn-sidebar-secondary {
@@ -345,10 +368,10 @@
 
     .preview-stats {
       background: var(--stats-bg);
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 16px;
-      font-size: 13px;
+      border-radius: 10px;
+      padding: 8px;
+      margin-top: 12px;
+      font-size: 12px;
     }
 
     .main-content {
@@ -371,6 +394,10 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    h1 i {
+      color: #0f9d58;
     }
 
     .controls {
@@ -436,6 +463,14 @@
       font-size: 0.85rem;
     }
 
+    .stats-numbers span i {
+      margin-right: 4px;
+    }
+
+    .stats-numbers span:first-child i { color: #3b82f6; }
+    .stats-numbers span:nth-child(2) i { color: #10b981; }
+    .stats-numbers span:nth-child(3) i { color: #ef4444; }
+
     .overall-percent {
       font-weight: 700;
       font-size: 1.2rem;
@@ -457,6 +492,10 @@
       font-size: 0.9rem;
     }
 
+    .weekly-title i {
+      color: #8b5cf6;
+    }
+
     .weekly-summary {
       display: flex;
       gap: 16px;
@@ -470,6 +509,11 @@
       border-radius: 20px;
       font-size: 0.8rem;
     }
+
+    .weekly-summary span i { margin-right: 4px; }
+    .weekly-summary span:first-child i { color: #10b981; }
+    .weekly-summary span:nth-child(2) i { color: #ef4444; }
+    .weekly-summary span:nth-child(3) i { color: #8b5cf6; }
 
     .weekly-days {
       display: flex;
@@ -549,9 +593,9 @@
 
     .cell .date {
       position: absolute;
-      top: 6px;
-      left: 8px;
-      font-size: 11px;
+      top: 4px;
+      left: 6px;
+      font-size: 10px;
       color: var(--muted);
       font-weight: 600;
     }
@@ -559,26 +603,26 @@
     .events {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-top: 24px;
+      gap: 3px;
+      margin-top: 20px;
       flex: 1;
       overflow-y: auto;
-      max-height: calc(100% - 28px);
+      max-height: calc(100% - 24px);
     }
 
     .event {
       display: inline-block;
-      padding: 4px 6px;
-      border-radius: 8px;
+      padding: 3px 5px;
+      border-radius: 6px;
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       max-width: 100%;
       white-space: normal;
       word-break: break-word;
       cursor: pointer;
       transition: transform 0.05s;
-      line-height: 1.2;
-      text-align: center;
+      line-height: 1.3;
+      text-align: left;
       font-weight: 500;
       text-shadow: 0 1px 1px rgba(0,0,0,0.2);
     }
@@ -590,7 +634,7 @@
 
     .empty {
       opacity: 0.6;
-      font-size: 11px;
+      font-size: 9px;
       color: var(--muted);
       font-style: italic;
       text-align: center;
@@ -621,60 +665,99 @@
     .modal {
       background: var(--modal-bg);
       padding: 20px;
-      border-radius: 16px;
+      border-radius: 20px;
       width: 90%;
-      max-width: 600px;
+      max-width: 500px;
       max-height: 85vh;
       overflow-y: auto;
     }
 
     .modal h3 {
-      margin: 0 0 12px 0;
+      margin: 0 0 16px 0;
+      font-size: 1.2rem;
       display: flex;
       align-items: center;
       gap: 8px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 10px;
     }
 
     .form-row {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .form-row label {
       display: block;
-      font-size: 0.8rem;
-      margin-bottom: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 3px;
       font-weight: 500;
     }
 
     .form-row input {
       width: 100%;
-      padding: 8px;
+      padding: 6px 8px;
       border-radius: 8px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text);
+      font-size: 13px;
+    }
+
+    .number-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .number-group input {
+      text-align: center;
+      width: 70px;
+      padding: 6px 4px;
+    }
+    
+    .number-group span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .number-group button {
+      background: var(--info-bg);
+      color: var(--text);
+      border: 1px solid var(--border-light);
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .number-group button:hover {
+      background: var(--btn-secondary-bg);
+      transform: none;
     }
 
     .stats-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .percentage {
-      padding: 10px;
+      padding: 8px;
       background: var(--stats-bg);
       border-radius: 8px;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 16px;
     }
 
     .btn-danger {
@@ -687,22 +770,110 @@
       background: var(--delete-btn-hover);
     }
 
-    /* Toast notification */
+    /* Estilo para os eventos no modal do dia */
+    .day-event-item {
+      background: var(--day-modal-event);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    
+    .day-event-item:hover {
+      transform: translateX(4px);
+    }
+    
+    .day-event-title {
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .day-event-stats {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    
+    .day-event-time {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    
+    .day-summary {
+      background: var(--stats-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .context-menu {
+      position: fixed;
+      background: var(--context-menu-bg);
+      border: 1px solid var(--context-menu-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 2000;
+      min-width: 180px;
+      overflow: hidden;
+      animation: fadeIn 0.1s ease;
+    }
+    
+    .context-menu-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      transition: background 0.1s;
+      color: var(--text);
+    }
+    
+    .context-menu-item:hover {
+      background: var(--context-menu-hover);
+    }
+    
+    .context-menu-item i {
+      width: 18px;
+      font-size: 14px;
+    }
+    
+    .context-menu-divider {
+      height: 1px;
+      background: var(--context-menu-border);
+      margin: 4px 0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
       background: var(--toast-bg);
       color: var(--toast-text);
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 12px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       z-index: 1100;
       animation: slideIn 0.3s ease;
       border-left: 4px solid #0f9d58;
+      font-size: 13px;
     }
     
     .toast.error {
@@ -733,6 +904,41 @@
         transform: translateX(100%);
         opacity: 0;
       }
+    }
+
+    input[type="number"] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 0.5;
+      height: 20px;
+    }
+    
+    .input-number-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .input-number-wrapper input {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .input-number-wrapper button {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-size: 14px;
+      font-weight: bold;
+      background: var(--btn-secondary-bg);
+      color: var(--text);
+      border: 1px solid var(--border-light);
     }
 
     @media (max-width: 900px) {
@@ -775,18 +981,22 @@
       <div class="simulados-stats">
         <div class="stats-grid">
           <div class="stat-card">
+            <i class="fas fa-clipboard-list"></i>
             <div class="stat-value" id="totalSimulados">0</div>
             <div class="stat-label">Simulados</div>
           </div>
           <div class="stat-card">
+            <i class="fas fa-chart-simple"></i>
             <div class="stat-value" id="mediaGeralSimulados">0%</div>
             <div class="stat-label">Média Geral</div>
           </div>
           <div class="stat-card">
+            <i class="fas fa-question-circle"></i>
             <div class="stat-value" id="totalQuestoesSimulados">0</div>
             <div class="stat-label">Total Questões</div>
           </div>
           <div class="stat-card">
+            <i class="fas fa-check-circle"></i>
             <div class="stat-value" id="totalAcertosSimulados">0</div>
             <div class="stat-label">Total Acertos</div>
           </div>
@@ -802,20 +1012,20 @@
     </div>
 
     <div class="sidebar-section">
-      <h3><i class="fas fa-plus-circle"></i> Novo Simulado Ponderado</h3>
+      <h3><i class="fas fa-plus-circle"></i> Novo Simulado</h3>
       <div class="form-simulado">
         <input type="text" id="simuladoTitle" placeholder="Título do Simulado *">
         <div id="materiasList"></div>
         <button id="addMateriaBtn" class="btn-sidebar btn-sidebar-secondary">
-          <i class="fas fa-plus"></i> Adicionar Matéria
+          <i class="fas fa-plus"></i> Matéria
         </button>
         <div class="preview-stats" id="previewStats">
           <strong><i class="fas fa-chart-simple"></i> Prévia</strong>
           <p>📚 Questões: <span id="previewTotalQuestoes">0</span> | ✅ Acertos: <span id="previewTotalAcertos">0</span></p>
-          <p>📈 Média ponderada: <span id="previewMediaPonderada">0</span>%</p>
+          <p>📈 Média: <span id="previewMediaPonderada">0</span>%</p>
         </div>
         <button id="saveSimuladoBtn" class="btn-sidebar">
-          <i class="fas fa-save"></i> Salvar Simulado
+          <i class="fas fa-save"></i> Salvar
         </button>
       </div>
     </div>
@@ -823,13 +1033,13 @@
 
   <div class="main-content">
     <header>
-      <h1><i class="fas fa-calendar-alt"></i> Calendário de Estudos Diários</h1>
+      <h1><i class="fas fa-calendar-alt"></i> Calendário de Estudos</h1>
       <div class="controls">
         <button id="showSidebarBtn" class="icon-btn">
-          <i class="fas fa-bars"></i> Mostrar Barra
+          <i class="fas fa-bars"></i> Barra
         </button>
         <button id="themeToggle" class="small">
-          <i class="fas fa-moon"></i> Modo escuro
+          <i class="fas fa-moon"></i> Escuro
         </button>
         <button id="prev"><i class="fas fa-chevron-left"></i></button>
         <div class="small" id="monthLabel"></div>
@@ -849,7 +1059,7 @@
     </div>
 
     <div class="weekly-performance">
-      <div class="weekly-title"><i class="fas fa-chart-line"></i> Desempenho dos últimos 7 dias</div>
+      <div class="weekly-title"><i class="fas fa-chart-line"></i> Últimos 7 dias</div>
       <div class="weekly-summary" id="weeklySummary"></div>
       <div class="weekly-days" id="weeklyDays"></div>
     </div>
@@ -858,32 +1068,41 @@
       <div class="weekdays" id="weekdays"></div>
       <div class="grid" id="grid"></div>
       <div class="footer">
-        <div><i class="fas fa-info-circle"></i> Clique no dia para adicionar | Clique no evento para editar/excluir</div>
+        <div><i class="fas fa-info-circle"></i> Clique no dia 📅 | Clique no evento ✏️ | Botão direito ⚡</div>
         <div id="info"></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal para adicionar/editar estudo individual -->
 <div class="modal-back" id="studyModal">
   <div class="modal">
-    <h3 id="studyModalTitle"><i class="fas fa-edit"></i> Adicionar Estudo</h3>
+    <h3 id="studyModalTitle"><i class="fas fa-edit" style="color:#3b82f6;"></i> Adicionar Estudo</h3>
     <div class="form-row">
-      <label><i class="fas fa-tag"></i> Título</label>
-      <input id="studyTitle" type="text" placeholder="Ex: Direito Penal">
+      <label><i class="fas fa-tag" style="color:#8b5cf6;"></i> Título da Matéria</label>
+      <input id="studyTitle" type="text" placeholder="Ex: Direito Penal, Matemática, Português">
     </div>
     <div class="form-row">
-      <label><i class="fas fa-clock"></i> Horário</label>
+      <label><i class="fas fa-clock" style="color:#f59e0b;"></i> Horário (opcional)</label>
       <input id="studyTime" type="text" placeholder="Ex: 19:00">
     </div>
     <div class="stats-group">
       <div class="form-row">
-        <label><i class="fas fa-check-circle"></i> Acertos</label>
-        <input id="studyHits" type="number" min="0" value="0">
+        <label><i class="fas fa-check-circle" style="color:#10b981;"></i> Acertos</label>
+        <div class="input-number-wrapper">
+          <button type="button" class="dec-hits">-</button>
+          <input id="studyHits" type="number" min="0" value="0" step="1">
+          <button type="button" class="inc-hits">+</button>
+        </div>
       </div>
       <div class="form-row">
-        <label><i class="fas fa-times-circle"></i> Erros</label>
-        <input id="studyErrors" type="number" min="0" value="0">
+        <label><i class="fas fa-times-circle" style="color:#ef4444;"></i> Erros</label>
+        <div class="input-number-wrapper">
+          <button type="button" class="dec-errors">-</button>
+          <input id="studyErrors" type="number" min="0" value="0" step="1">
+          <button type="button" class="inc-errors">+</button>
+        </div>
       </div>
     </div>
     <div class="percentage" id="studyPercentage">📊 Percentual: 0%</div>
@@ -897,19 +1116,32 @@
   </div>
 </div>
 
+<!-- Modal para visualizar TODOS os estudos do dia -->
+<div class="modal-back" id="dayModal">
+  <div class="modal">
+    <h3 id="dayModalTitle"><i class="fas fa-calendar-day" style="color:#0f9d58;"></i> Estudos do Dia</h3>
+    <div id="dayModalContent"></div>
+    <div class="modal-actions">
+      <button id="closeDayModalBtn" class="small"><i class="fas fa-times"></i> Fechar</button>
+      <button id="addStudyFromDayBtn" class="small"><i class="fas fa-plus"></i> Adicionar Estudo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para simulado -->
 <div class="modal-back" id="simuladoModal">
-  <div class="modal" style="max-width: 700px;">
-    <h3 id="simuladoModalTitle"><i class="fas fa-chart-bar"></i> Detalhes do Simulado</h3>
+  <div class="modal" style="max-width: 550px;">
+    <h3 id="simuladoModalTitle"><i class="fas fa-chart-bar" style="color:#f59e0b;"></i> Simulado</h3>
     <div id="simuladoModalContent"></div>
     <div id="simuladoEditFields" style="display: none;"></div>
     <div class="modal-actions">
       <button id="closeSimuladoBtn" class="small"><i class="fas fa-times"></i> Fechar</button>
-      <button id="editSimuladoBtn" class="small"><i class="fas fa-pen"></i> Editar</button>
+      <button id="editSimuladoBtn" class="small"><i class="fas fa-pen" style="color:#3b82f6;"></i> Editar</button>
       <button id="deleteSimuladoModalBtn" class="small btn-danger">
         <i class="fas fa-trash"></i> Excluir
       </button>
       <button id="saveSimuladoEditBtn" class="btn-sidebar" style="display: none;">
-        <i class="fas fa-save"></i> Salvar Alterações
+        <i class="fas fa-save"></i> Salvar
       </button>
     </div>
   </div>
@@ -928,7 +1160,14 @@
   const showSidebarBtn = document.getElementById('showSidebarBtn');
   const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
   
+  // Modais
   const studyModal = document.getElementById('studyModal');
+  const dayModal = document.getElementById('dayModal');
+  const dayModalTitle = document.getElementById('dayModalTitle');
+  const dayModalContent = document.getElementById('dayModalContent');
+  const closeDayModalBtn = document.getElementById('closeDayModalBtn');
+  const addStudyFromDayBtn = document.getElementById('addStudyFromDayBtn');
+  
   const studyModalTitle = document.getElementById('studyModalTitle');
   const studyTitle = document.getElementById('studyTitle');
   const studyTime = document.getElementById('studyTime');
@@ -962,10 +1201,12 @@
   let currentEditingStudy = null;
   let currentEditingDateKey = null;
   let currentViewingSimulado = null;
+  let currentDayModalDateKey = null;
   let materias = [];
   let isEditingMode = false;
+  let currentContextMenu = null;
 
-  // ====================== TOAST NOTIFICATION ======================
+  // ====================== TOAST ======================
   function showToast(message, type = 'success') {
     const existingToast = document.querySelector('.toast');
     if (existingToast) {
@@ -987,7 +1228,7 @@
     }, 3000);
   }
 
-  // ====================== FUNÇÕES AUXILIARES ======================
+  // ====================== FUNÇÕES ======================
   function getColorByPercentage(percentage) {
     if (percentage < 70) return '#D32F2F';
     if (percentage <= 74.99) return '#FBC02D';
@@ -1033,7 +1274,7 @@
     const errors = parseInt(studyErrors.value) || 0;
     const percent = calculatePercentage(hits, errors);
     const color = getColorByPercentage(percent);
-    studyPercentage.innerHTML = `📊 Percentual: ${percent.toFixed(1)}%`;
+    studyPercentage.innerHTML = `📊 Percentual de acertos: ${percent.toFixed(1)}%`;
     studyPercentage.style.backgroundColor = color + '20';
     studyPercentage.style.color = color;
   }
@@ -1064,8 +1305,8 @@
     const m = today.getMonth();
     const pad = (n) => String(n).padStart(2, '0');
     const key = (day) => `${y}-${pad(m+1)}-${pad(day)}`;
-    sample[key(2)] = [{ id: Date.now()+1, title: 'DP - Teoria do Crime', time: '19:00', hits: 12, errors: 15 }];
-    sample[key(4)] = [{ id: Date.now()+2, title: 'DH - ECI', time: '19:00', hits: 18, errors: 12 }];
+    sample[key(2)] = [{ id: Date.now()+1, title: 'Direito Penal', time: '19:00', hits: 12, errors: 15 }];
+    sample[key(4)] = [{ id: Date.now()+2, title: 'Direitos Humanos', time: '19:00', hits: 18, errors: 12 }];
     sample[key(6)] = [{ id: Date.now()+3, title: 'Lei 8.112', time: '09:00', hits: 28, errors: 12 }];
     saveDailyEvents(sample);
   }
@@ -1086,6 +1327,100 @@
     saveSimulados(sampleSimulados);
   }
 
+  // ====================== MODAL DO DIA ======================
+  function openDayModal(dateKey, dateDisplay) {
+    currentDayModalDateKey = dateKey;
+    const eventsMap = loadDailyEvents();
+    const dayEvents = eventsMap[dateKey] || [];
+    
+    dayModalTitle.innerHTML = `<i class="fas fa-calendar-day" style="color:#0f9d58;"></i> ${dateDisplay}`;
+    
+    if (dayEvents.length === 0) {
+      dayModalContent.innerHTML = `
+        <div style="text-align: center; padding: 30px 20px; background: var(--info-bg); border-radius: 12px;">
+          <i class="fas fa-calendar-alt" style="font-size: 32px; color: var(--muted); margin-bottom: 12px; display: block;"></i>
+          <p style="color: var(--muted);">Nenhum estudo registrado neste dia</p>
+          <button id="emptyDayAddBtn" class="small" style="margin-top: 8px;">
+            <i class="fas fa-plus"></i> Adicionar primeiro estudo
+          </button>
+        </div>
+      `;
+      const emptyDayAddBtn = document.getElementById('emptyDayAddBtn');
+      if (emptyDayAddBtn) {
+        emptyDayAddBtn.onclick = () => {
+          dayModal.style.display = 'none';
+          openAddModal(dateKey);
+        };
+      }
+    } else {
+      let totalHits = 0, totalErrors = 0;
+      dayEvents.forEach(ev => {
+        totalHits += ev.hits || 0;
+        totalErrors += ev.errors || 0;
+      });
+      const totalQuestions = totalHits + totalErrors;
+      const dayPercent = totalQuestions > 0 ? ((totalHits / totalQuestions) * 100).toFixed(1) : 0;
+      const percentColor = getColorByPercentage(parseFloat(dayPercent));
+      
+      let eventsHtml = `<div class="day-summary">
+        <strong>📊 Resumo do dia</strong><br>
+        ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 <span style="color:${percentColor}; font-weight:bold;">${dayPercent}%</span>
+      </div>`;
+      
+      eventsHtml += '<div style="max-height: 350px; overflow-y: auto;">';
+      dayEvents.forEach(ev => {
+        const hits = ev.hits || 0;
+        const errors = ev.errors || 0;
+        const total = hits + errors;
+        const percent = total > 0 ? (hits / total) * 100 : 0;
+        const color = getColorByPercentage(percent);
+        
+        eventsHtml += `
+          <div class="day-event-item" style="border-left-color: ${color};" data-event-id="${ev.id}">
+            <div class="day-event-title">
+              <span><i class="fas fa-book"></i> ${escapeHtml(ev.title)}</span>
+              <i class="fas fa-chevron-right" style="font-size: 10px; color: var(--muted);"></i>
+            </div>
+            ${ev.time ? `<div class="day-event-time"><i class="fas fa-clock"></i> ${escapeHtml(ev.time)}</div>` : ''}
+            <div class="day-event-stats">
+              <span><i class="fas fa-check-circle" style="color:#10b981;"></i> ${hits}</span>
+              <span><i class="fas fa-times-circle" style="color:#ef4444;"></i> ${errors}</span>
+              <span><strong style="color:${color}">${percent.toFixed(1)}%</strong></span>
+            </div>
+          </div>
+        `;
+      });
+      eventsHtml += '</div>';
+      dayModalContent.innerHTML = eventsHtml;
+      
+      // Adicionar evento de clique em cada item para editar
+      document.querySelectorAll('.day-event-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+          const eventId = parseInt(el.dataset.eventId);
+          dayModal.style.display = 'none';
+          openStudyModal(dateKey, eventId);
+        });
+      });
+    }
+    
+    dayModal.style.display = 'flex';
+  }
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+  
+  function closeDayModal() {
+    dayModal.style.display = 'none';
+    currentDayModalDateKey = null;
+  }
+
   // ====================== DESEMPENHO ======================
   function updatePerformanceBanner() {
     const eventsMap = loadDailyEvents();
@@ -1100,21 +1435,21 @@
     const color = getColorByPercentage(parseFloat(overallPercentage));
     
     document.getElementById('globalStats').innerHTML = `
-      <span><i class="fas fa-book"></i> ${allEvents.length} estudo(s)</span>
-      <span><i class="fas fa-check-circle"></i> ${totalHits} acertos</span>
-      <span><i class="fas fa-times-circle"></i> ${totalErrors} erros</span>
+      <span><i class="fas fa-book"></i> ${allEvents.length}</span>
+      <span><i class="fas fa-check-circle"></i> ${totalHits}</span>
+      <span><i class="fas fa-times-circle"></i> ${totalErrors}</span>
     `;
     const globalPercent = document.getElementById('globalPercent');
     globalPercent.innerHTML = `<i class="fas fa-chart-line"></i> ${overallPercentage}%`;
     globalPercent.style.backgroundColor = color + '30';
     globalPercent.style.color = color;
-    document.getElementById('info').innerHTML = `📚 ${allEvents.length} estudo(s) | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}%`;
+    document.getElementById('info').innerHTML = `📚 ${allEvents.length} estudos | ✅ ${totalHits} acertos | ❌ ${totalErrors} erros | 📈 ${overallPercentage}% acerto`;
   }
 
   function updateWeeklyPerformance() {
     const eventsMap = loadDailyEvents();
     const today = new Date();
-    const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     const weeklyData = [];
     
     for (let i = 6; i >= 0; i--) {
@@ -1138,9 +1473,9 @@
     const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
     
     document.getElementById('weeklySummary').innerHTML = `
-      <span><i class="fas fa-check-circle"></i> ${totalHitsWeek} acertos</span>
-      <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek} erros</span>
-      <span><i class="fas fa-chart-line"></i> Média: ${overallWeekPercent}%</span>
+      <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
+      <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
+      <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
     `;
     
     const weeklyDaysDiv = document.getElementById('weeklyDays');
@@ -1152,15 +1487,95 @@
       card.innerHTML = `
         <div class="week-day-name">${day.day}</div>
         <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
-        <div style="font-size:10px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
+        <div style="font-size:9px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
       `;
       weeklyDaysDiv.appendChild(card);
     });
   }
 
+  // ====================== MENU DE CONTEXTO ======================
+  function hideContextMenu() {
+    if (currentContextMenu) {
+      currentContextMenu.remove();
+      currentContextMenu = null;
+    }
+  }
+
+  function showContextMenu(x, y, dateKey, eventId) {
+    hideContextMenu();
+    
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    
+    menu.innerHTML = `
+      <div class="context-menu-item" data-action="edit">
+        <i class="fas fa-pen"></i> Editar estudo
+      </div>
+      <div class="context-menu-item" data-action="delete">
+        <i class="fas fa-trash"></i> Excluir estudo
+      </div>
+      <div class="context-menu-divider"></div>
+      <div class="context-menu-item" data-action="cancel">
+        <i class="fas fa-times"></i> Cancelar
+      </div>
+    `;
+    
+    document.body.appendChild(menu);
+    currentContextMenu = menu;
+    
+    const rect = menu.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      menu.style.left = (window.innerWidth - rect.width - 10) + 'px';
+    }
+    if (rect.bottom > window.innerHeight) {
+      menu.style.top = (window.innerHeight - rect.height - 10) + 'px';
+    }
+    
+    const handleAction = (action) => {
+      hideContextMenu();
+      if (action === 'edit') {
+        openStudyModal(dateKey, eventId);
+      } else if (action === 'delete') {
+        if (confirm('Excluir este estudo permanentemente?')) {
+          const eventsMap = loadDailyEvents();
+          const dayEvents = eventsMap[dateKey] || [];
+          const newDayEvents = dayEvents.filter(ev => ev.id !== eventId);
+          if (newDayEvents.length === 0) delete eventsMap[dateKey];
+          else eventsMap[dateKey] = newDayEvents;
+          saveDailyEvents(eventsMap);
+          renderCalendar();
+          showToast('Estudo excluído!', 'warning');
+        }
+      }
+    };
+    
+    menu.querySelectorAll('.context-menu-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = item.dataset.action;
+        handleAction(action);
+      });
+    });
+    
+    setTimeout(() => {
+      document.addEventListener('click', function onClickOutside(e) {
+        if (!menu.contains(e.target)) {
+          hideContextMenu();
+          document.removeEventListener('click', onClickOutside);
+        }
+      });
+    }, 0);
+  }
+
   // ====================== RENDER CALENDÁRIO ======================
   function formatMonthYear(d) {
     return d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).replace(/^\w/, l => l.toUpperCase());
+  }
+
+  function formatDateKey(year, month, day) {
+    return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   }
 
   function renderCalendar() {
@@ -1193,7 +1608,7 @@
       dateSpan.textContent = d;
       cell.appendChild(dateSpan);
 
-      const key = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const key = formatDateKey(currentDate.getFullYear(), currentDate.getMonth() + 1, d);
       const dayEvents = eventsMap[key] || [];
       const eventsContainer = document.createElement('div');
       eventsContainer.className = 'events';
@@ -1212,19 +1627,38 @@
           const total = hits + errors;
           let percentage = total > 0 ? (hits / total) * 100 : 0;
           const color = getColorByPercentage(percentage);
-          let eventText = ev.time ? `${ev.time} ${ev.title}` : ev.title;
+          let eventText = ev.title;
+          if (ev.time) eventText = `${ev.time} ${eventText}`;
           if (total > 0) eventText += ` (${percentage.toFixed(0)}%)`;
           evDiv.textContent = eventText;
           evDiv.style.backgroundColor = color;
+          evDiv.title = `${ev.title} - Acertos: ${hits} | Erros: ${errors} | ${percentage.toFixed(1)}%`;
+          
           evDiv.onclick = (e) => {
             e.stopPropagation();
             openStudyModal(key, ev.id);
           };
+          
+          evDiv.ondblclick = (e) => {
+            e.stopPropagation();
+            openStudyModal(key, ev.id);
+          };
+          
+          evDiv.oncontextmenu = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showContextMenu(e.clientX, e.clientY, key, ev.id);
+          };
+          
           eventsContainer.appendChild(evDiv);
         });
       }
       cell.appendChild(eventsContainer);
-      cell.onclick = () => openAddModal(key);
+      
+      // Clique no dia - abre modal com todos os estudos do dia
+      const displayDate = `${String(d).padStart(2,'0')}/${String(currentDate.getMonth()+1).padStart(2,'0')}/${currentDate.getFullYear()}`;
+      cell.onclick = () => openDayModal(key, displayDate);
+      
       gridEl.appendChild(cell);
     }
 
@@ -1241,11 +1675,12 @@
     updateWeeklyPerformance();
   }
 
-  // ====================== CRUD ESTUDOS DIÁRIOS ======================
+  // ====================== CRUD ESTUDOS ======================
   function openAddModal(dateKey) {
+    hideContextMenu();
     currentEditingStudy = null;
     currentEditingDateKey = dateKey;
-    studyModalTitle.innerHTML = '<i class="fas fa-plus-circle"></i> Adicionar Estudo';
+    studyModalTitle.innerHTML = '<i class="fas fa-plus-circle" style="color:#10b981;"></i> Adicionar Estudo';
     studyTitle.value = '';
     studyTime.value = '';
     studyHits.value = 0;
@@ -1256,6 +1691,7 @@
   }
 
   function openStudyModal(dateKey, eventId) {
+    hideContextMenu();
     const eventsMap = loadDailyEvents();
     const dayEvents = eventsMap[dateKey] || [];
     const event = dayEvents.find(ev => ev.id === eventId);
@@ -1264,7 +1700,7 @@
     currentEditingStudy = event;
     currentEditingDateKey = dateKey;
     
-    studyModalTitle.innerHTML = '<i class="fas fa-edit"></i> Editar Estudo';
+    studyModalTitle.innerHTML = '<i class="fas fa-edit" style="color:#3b82f6;"></i> Editar Estudo';
     studyTitle.value = event.title;
     studyTime.value = event.time || '';
     studyHits.value = event.hits || 0;
@@ -1277,7 +1713,7 @@
   function saveStudy() {
     if (!currentEditingDateKey) return;
     const title = studyTitle.value.trim();
-    if (!title) { showToast('Título é obrigatório', 'error'); return; }
+    if (!title) { showToast('Digite o nome da matéria', 'error'); return; }
     const hits = parseInt(studyHits.value) || 0;
     const errors = parseInt(studyErrors.value) || 0;
     const eventsMap = loadDailyEvents();
@@ -1319,6 +1755,43 @@
     currentEditingDateKey = null;
   }
 
+  // ====================== CONTROLES NUMÉRICOS ======================
+  function setupNumberControls() {
+    const decHits = document.querySelector('.dec-hits');
+    const incHits = document.querySelector('.inc-hits');
+    const decErrors = document.querySelector('.dec-errors');
+    const incErrors = document.querySelector('.inc-errors');
+    
+    if (decHits) {
+      decHits.onclick = () => {
+        let val = parseInt(studyHits.value) || 0;
+        if (val > 0) studyHits.value = val - 1;
+        updateStudyPercentage();
+      };
+    }
+    if (incHits) {
+      incHits.onclick = () => {
+        let val = parseInt(studyHits.value) || 0;
+        studyHits.value = val + 1;
+        updateStudyPercentage();
+      };
+    }
+    if (decErrors) {
+      decErrors.onclick = () => {
+        let val = parseInt(studyErrors.value) || 0;
+        if (val > 0) studyErrors.value = val - 1;
+        updateStudyPercentage();
+      };
+    }
+    if (incErrors) {
+      incErrors.onclick = () => {
+        let val = parseInt(studyErrors.value) || 0;
+        studyErrors.value = val + 1;
+        updateStudyPercentage();
+      };
+    }
+  }
+
   // ====================== SIMULADOS ======================
   function renderMateriasForm() {
     materiasListDiv.innerHTML = '';
@@ -1327,17 +1800,22 @@
       div.className = 'materia-item';
       div.innerHTML = `
         <div class="materia-header">
-          <span>📚 ${m.nome || 'Nova Matéria'}</span>
+          <span>📚 ${m.nome || 'Nova'}</span>
           <button class="remove-materia" data-idx="${idx}">✗</button>
         </div>
         <div class="materia-fields">
-          <input type="text" placeholder="Matéria" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-field="nome" data-idx="${idx}">
+          <input type="text" placeholder="Nome" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-field="nome" data-idx="${idx}">
           <input type="number" step="0.1" placeholder="Peso" value="${m.peso || 1}" data-field="peso" data-idx="${idx}">
-          <input type="number" placeholder="Questões" value="${m.questoes || 0}" data-field="questoes" data-idx="${idx}">
+          <div class="number-group">
+            <input type="number" placeholder="Q" value="${m.questoes || 0}" data-field="questoes" data-idx="${idx}" style="width:60px">
+            <span>q</span>
+          </div>
         </div>
         <div class="acertos-container">
-          <input type="number" placeholder="Acertos" value="${m.acertos || 0}" data-field="acertos" data-idx="${idx}">
-          <span>/ ${m.questoes || 0}</span>
+          <div class="number-group">
+            <input type="number" placeholder="Acertos" value="${m.acertos || 0}" data-field="acertos" data-idx="${idx}" style="width:60px">
+            <span>/ ${m.questoes || 0}</span>
+          </div>
         </div>
       `;
       materiasListDiv.appendChild(div);
@@ -1400,10 +1878,10 @@
       const card = document.createElement('div');
       card.className = 'simulado-card';
       card.innerHTML = `
-        <div class="simulado-title"><i class="fas fa-trophy"></i> ${sim.title.replace(/</g, '&lt;')}</div>
+        <div class="simulado-title"><i class="fas fa-trophy"></i> ${sim.title.substring(0, 30)}</div>
         <div class="simulado-meta">
           <span><i class="fas fa-calendar"></i> ${sim.date}</span>
-          <span><i class="fas fa-question-circle"></i> ${stats.totalQuestoes} q</span>
+          <span><i class="fas fa-question-circle"></i> ${stats.totalQuestoes}</span>
         </div>
         <div class="simulado-percent" style="color:${color}">${percent.toFixed(1)}%</div>
         <div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%; background:${color};"></div></div>
@@ -1418,7 +1896,7 @@
     const simulado = simulados.find(s => s.id === simuladoId);
     if (!simulado) return;
     currentViewingSimulado = JSON.parse(JSON.stringify(simulado));
-    simuladoModalTitle.innerHTML = `<i class="fas fa-chart-bar"></i> ${simulado.title.replace(/</g, '&lt;')}`;
+    simuladoModalTitle.innerHTML = `<i class="fas fa-chart-bar" style="color:#f59e0b;"></i> ${simulado.title.substring(0, 35)}`;
     isEditingMode = false;
     updateSimuladoDisplay();
     simuladoModal.style.display = 'flex';
@@ -1435,25 +1913,21 @@
       saveSimuladoEditBtn.style.display = 'none';
       
       const stats = calculateSimuladoStats(currentViewingSimulado.materias);
-      let materiasHtml = '<div style="max-height:300px; overflow-y:auto;">';
+      let materiasHtml = '<div style="max-height:250px; overflow-y:auto;">';
       currentViewingSimulado.materias.forEach(m => {
         const percentMat = m.questoes > 0 ? (m.acertos / m.questoes * 100).toFixed(1) : 0;
-        materiasHtml += `<div style="background:var(--info-bg); border-radius:8px; padding:10px; margin-bottom:8px;">
-          <strong><i class="fas fa-book"></i> ${(m.nome || '').replace(/</g, '&lt;')}</strong><br>
-          <i class="fas fa-weight-hanging"></i> Peso: ${m.peso} | 
-          <i class="fas fa-question-circle"></i> Questões: ${m.questoes} | 
-          <i class="fas fa-check-circle"></i> Acertos: ${m.acertos} (${percentMat}%)
+        materiasHtml += `<div style="background:var(--info-bg); border-radius:8px; padding:8px; margin-bottom:6px; font-size:12px;">
+          <strong>${(m.nome || '').substring(0, 25)}</strong><br>
+          ⚖️ Peso: ${m.peso} | 📊 ${m.questoes}q | ✅ ${m.acertos} (${percentMat}%)
         </div>`;
       });
       materiasHtml += '</div>';
       
       simuladoModalContent.innerHTML = `
-        <p><strong><i class="fas fa-calendar"></i> Data:</strong> ${currentViewingSimulado.date}</p>
-        <p><strong><i class="fas fa-question-circle"></i> Total Questões:</strong> ${stats.totalQuestoes}</p>
-        <p><strong><i class="fas fa-check-circle"></i> Acertos:</strong> ${stats.totalAcertos} | 
-        <i class="fas fa-times-circle"></i> Erros: ${stats.totalErros}</p>
-        <p><strong><i class="fas fa-chart-line"></i> Média Ponderada:</strong> ${stats.mediaPonderada.toFixed(1)}%</p>
-        <hr>
+        <p style="font-size:13px;"><strong>📅 Data:</strong> ${currentViewingSimulado.date}</p>
+        <p style="font-size:13px;"><strong>📚 Total:</strong> ${stats.totalQuestoes}q | ✅ ${stats.totalAcertos} | ❌ ${stats.totalErros}</p>
+        <p style="font-size:13px;"><strong>📈 Média:</strong> <strong style="color:#f59e0b;">${stats.mediaPonderada.toFixed(1)}%</strong></p>
+        <hr style="margin:8px 0;">
         ${materiasHtml}
       `;
     } else {
@@ -1465,12 +1939,12 @@
       
       simuladoEditFields.innerHTML = `
         <div class="form-row">
-          <label><i class="fas fa-tag"></i> Título do Simulado</label>
-          <input type="text" id="editSimTitulo" value="${currentViewingSimulado.title.replace(/"/g, '&quot;').replace(/</g, '&lt;')}" style="width:100%;">
+          <label><i class="fas fa-tag"></i> Título</label>
+          <input type="text" id="editSimTitulo" value="${currentViewingSimulado.title.replace(/"/g, '&quot;')}" style="width:100%;">
         </div>
         <div id="editMateriasContainer"></div>
-        <button type="button" id="addEditMateriaBtn" class="btn-sidebar-secondary" style="margin-top: 10px;">
-          <i class="fas fa-plus"></i> Adicionar Matéria
+        <button type="button" id="addEditMateriaBtn" class="btn-sidebar-secondary" style="margin-top: 8px; width:100%; padding:6px;">
+          <i class="fas fa-plus"></i> Matéria
         </button>
       `;
       
@@ -1483,17 +1957,22 @@
           div.className = 'materia-item';
           div.innerHTML = `
             <div class="materia-header">
-              <span>📚 ${(m.nome || 'Nova Matéria').replace(/</g, '&lt;')}</span>
+              <span>📚 ${(m.nome || 'Nova').substring(0, 15)}</span>
               <button class="remove-edit-materia" data-idx="${idx}">✗</button>
             </div>
             <div class="materia-fields">
-              <input type="text" placeholder="Matéria" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-edit-field="nome" data-idx="${idx}">
+              <input type="text" placeholder="Nome" value="${(m.nome || '').replace(/"/g, '&quot;')}" data-edit-field="nome" data-idx="${idx}">
               <input type="number" step="0.1" placeholder="Peso" value="${m.peso || 1}" data-edit-field="peso" data-idx="${idx}">
-              <input type="number" placeholder="Questões" value="${m.questoes || 0}" data-edit-field="questoes" data-idx="${idx}">
+              <div class="number-group">
+                <input type="number" placeholder="Q" value="${m.questoes || 0}" data-edit-field="questoes" data-idx="${idx}" style="width:60px">
+                <span>q</span>
+              </div>
             </div>
             <div class="acertos-container">
-              <input type="number" placeholder="Acertos" value="${m.acertos || 0}" data-edit-field="acertos" data-idx="${idx}">
-              <span>/ ${m.questoes || 0}</span>
+              <div class="number-group">
+                <input type="number" placeholder="Acertos" value="${m.acertos || 0}" data-edit-field="acertos" data-idx="${idx}" style="width:60px">
+                <span>/ ${m.questoes || 0}</span>
+              </div>
             </div>
           `;
           container.appendChild(div);
@@ -1545,15 +2024,14 @@
     if (!newTitle) { showToast('Título obrigatório', 'error'); return; }
     currentViewingSimulado.title = newTitle;
     
-    // Validar matérias
     for (let i = 0; i < currentViewingSimulado.materias.length; i++) {
       const m = currentViewingSimulado.materias[i];
       if (!m.nome || m.nome.trim() === '') {
-        showToast(`Matéria ${i+1} precisa de um nome`, 'error');
+        showToast(`Matéria ${i+1} precisa de nome`, 'error');
         return;
       }
       if (parseInt(m.questoes) <= 0) {
-        showToast(`"${m.nome}" precisa ter pelo menos 1 questão`, 'error');
+        showToast(`"${m.nome}" precisa ter questões`, 'error');
         return;
       }
     }
@@ -1566,12 +2044,12 @@
     }
     closeSimuladoModal();
     renderSimuladosList();
-    showToast('✅ Simulado atualizado com sucesso!');
+    showToast('✅ Simulado atualizado!');
   }
 
   function deleteSimuladoFromModal() {
     if (!currentViewingSimulado) return;
-    if (!confirm('Excluir este simulado permanentemente?')) return;
+    if (!confirm('Excluir este simulado?')) return;
     let simulados = loadSimulados();
     simulados = simulados.filter(s => s.id !== currentViewingSimulado.id);
     saveSimulados(simulados);
@@ -1588,12 +2066,12 @@
 
   function saveNewSimulado() {
     const title = simuladoTitleInput.value.trim();
-    if (!title) { showToast('Digite o título do simulado', 'error'); return; }
-    if (materias.length === 0) { showToast('Adicione pelo menos uma matéria', 'error'); return; }
+    if (!title) { showToast('Digite o título', 'error'); return; }
+    if (materias.length === 0) { showToast('Adicione matérias', 'error'); return; }
     for (let i = 0; i < materias.length; i++) {
       const m = materias[i];
-      if (!m.nome || m.nome.trim() === '') { showToast(`Matéria ${i+1} precisa de um nome`, 'error'); return; }
-      if (parseInt(m.questoes) <= 0) { showToast(`"${m.nome}" precisa de pelo menos 1 questão`, 'error'); return; }
+      if (!m.nome || m.nome.trim() === '') { showToast(`Matéria ${i+1} precisa de nome`, 'error'); return; }
+      if (parseInt(m.questoes) <= 0) { showToast(`"${m.nome}" precisa de questões`, 'error'); return; }
     }
     const simulados = loadSimulados();
     simulados.push({
@@ -1608,7 +2086,7 @@
     renderMateriasForm();
     updatePreview();
     renderSimuladosList();
-    showToast('✅ Simulado salvo com sucesso!');
+    showToast('✅ Simulado salvo!');
   }
 
   // ====================== IMPORTAÇÃO/EXPORTAÇÃO ======================
@@ -1621,7 +2099,7 @@
     a.download = `dados_${new Date().toISOString().slice(0,10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Dados exportados com sucesso!');
+    showToast('Dados exportados!');
   }
   
   function importAllData(file) {
@@ -1633,13 +2111,13 @@
         if (data.simulados) saveSimulados(data.simulados);
         renderCalendar();
         renderSimuladosList();
-        showToast('✅ Dados importados com sucesso!');
+        showToast('✅ Dados importados!');
       } catch(err) { showToast('Arquivo inválido', 'error'); }
     };
     reader.readAsText(file);
   }
 
-  // ====================== SIDEBAR COLLAPSE ======================
+  // ====================== SIDEBAR ======================
   function toggleSidebar(show) {
     if (show) {
       sidebar.classList.remove('collapsed');
@@ -1650,7 +2128,6 @@
     }
   }
   
-  // Restaurar estado da sidebar
   const savedSidebarState = localStorage.getItem('sidebarCollapsed');
   if (savedSidebarState === 'true') {
     sidebar.classList.add('collapsed');
@@ -1673,6 +2150,15 @@
   studyHits.addEventListener('input', updateStudyPercentage);
   studyErrors.addEventListener('input', updateStudyPercentage);
   
+  closeDayModalBtn.onclick = closeDayModal;
+  addStudyFromDayBtn.onclick = () => {
+    if (currentDayModalDateKey) {
+      dayModal.style.display = 'none';
+      openAddModal(currentDayModalDateKey);
+    }
+  };
+  dayModal.onclick = (e) => { if (e.target === dayModal) closeDayModal(); };
+  
   closeSimuladoBtn.onclick = closeSimuladoModal;
   editSimuladoBtn.onclick = enableSimuladoEdit;
   deleteSimuladoModalBtn.onclick = deleteSimuladoFromModal;
@@ -1684,14 +2170,16 @@
     updatePreview();
   });
   
+  document.addEventListener('click', () => hideContextMenu());
+  
   function initTheme() {
     const saved = localStorage.getItem('theme');
     if (saved === 'light') { 
       document.body.classList.remove('dark'); 
-      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Modo escuro';
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Escuro';
     } else { 
       document.body.classList.add('dark'); 
-      themeToggle.innerHTML = '<i class="fas fa-sun"></i> Modo claro';
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i> Claro';
     }
   }
   
@@ -1699,11 +2187,11 @@
     if (document.body.classList.contains('dark')) {
       document.body.classList.remove('dark');
       localStorage.setItem('theme', 'light');
-      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Modo escuro';
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Escuro';
     } else {
       document.body.classList.add('dark');
       localStorage.setItem('theme', 'dark');
-      themeToggle.innerHTML = '<i class="fas fa-sun"></i> Modo claro';
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i> Claro';
     }
   }
   themeToggle.addEventListener('click', toggleTheme);
@@ -1722,6 +2210,12 @@
   renderCalendar();
   renderSimuladosList();
   updatePreview();
+  
+  const observer = new MutationObserver(() => {
+    setupNumberControls();
+  });
+  observer.observe(studyModal, { attributes: true, attributeFilter: ['style'] });
+  setupNumberControls();
 </script>
 </body>
 </html>
