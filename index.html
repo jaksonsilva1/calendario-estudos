@@ -770,7 +770,6 @@
       background: var(--delete-btn-hover);
     }
 
-    /* Estilo para os eventos no modal do dia */
     .day-event-item {
       background: var(--day-modal-event);
       border-radius: 12px;
@@ -1373,7 +1372,7 @@
         const errors = ev.errors || 0;
         const total = hits + errors;
         const percent = total > 0 ? (hits / total) * 100 : 0;
-        const color = getColorByPercentage(percent);
+        const color = total === 0 ? '#9CA3AF' : getColorByPercentage(percent);
         
         eventsHtml += `
           <div class="day-event-item" style="border-left-color: ${color};" data-event-id="${ev.id}">
@@ -1447,6 +1446,7 @@
   }
 
   function updateWeeklyPerformance() {
+    
     const eventsMap = loadDailyEvents();
     const today = new Date();
     const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -1467,30 +1467,40 @@
       weeklyData.push({ day: daysOfWeek[d.getDay()], date: d.getDate(), hits, errors, percent });
     }
     
-    let totalHitsWeek = 0, totalErrorsWeek = 0;
-    weeklyData.forEach(d => { totalHitsWeek += d.hits; totalErrorsWeek += d.errors; });
-    const totalWeek = totalHitsWeek + totalErrorsWeek;
-    const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
-    
-    document.getElementById('weeklySummary').innerHTML = `
-      <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
-      <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
-      <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
-    `;
-    
-    const weeklyDaysDiv = document.getElementById('weeklyDays');
-    weeklyDaysDiv.innerHTML = '';
-    weeklyData.forEach(day => {
-      const color = getColorByPercentage(day.percent);
-      const card = document.createElement('div');
-      card.className = 'week-day-card';
-      card.innerHTML = `
-        <div class="week-day-name">${day.day}</div>
-        <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
-        <div style="font-size:9px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
-      `;
-      weeklyDaysDiv.appendChild(card);
-    });
+let totalHitsWeek = 0, totalErrorsWeek = 0;
+weeklyData.forEach(d => { totalHitsWeek += d.hits; totalErrorsWeek += d.errors; });
+const totalWeek = totalHitsWeek + totalErrorsWeek;
+const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
+
+document.getElementById('weeklySummary').innerHTML = `
+  <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
+  <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
+  <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
+`;
+
+const weeklyDaysDiv = document.getElementById('weeklyDays');
+weeklyDaysDiv.innerHTML = '';
+weeklyData.forEach(day => {
+  const color = day.hits + day.errors === 0 ? '#9CA3AF' : getColorByPercentage(day.percent);
+  const card = document.createElement('div');
+  card.className = 'week-day-card';
+  card.innerHTML = `
+    <div class="week-day-name">${day.day}</div>
+    <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
+    <div style="font-size:9px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
+  `;
+  weeklyDaysDiv.appendChild(card);
+});
+
+const metaSemanal = 600;
+const faltaMeta = Math.max(0, metaSemanal - totalWeek);
+
+document.getElementById('weeklySummary').innerHTML = `
+  <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
+  <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
+  <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
+  <span><i class="fas fa-question-circle"></i> ${totalWeek}/${metaSemanal} (falta ${faltaMeta})</span>
+`;
   }
 
   // ====================== MENU DE CONTEXTO ======================
@@ -1626,7 +1636,12 @@
           const errors = ev.errors || 0;
           const total = hits + errors;
           let percentage = total > 0 ? (hits / total) * 100 : 0;
-          const color = getColorByPercentage(percentage);
+          let color;
+          if (total === 0) {
+            color = '#9CA3AF'; // cinza para eventos sem questões resolvidas
+          } else {
+            color = getColorByPercentage(percentage);
+          }
           let eventText = ev.title;
           if (ev.time) eventText = `${ev.time} ${eventText}`;
           if (total > 0) eventText += ` (${percentage.toFixed(0)}%)`;
