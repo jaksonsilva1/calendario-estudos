@@ -1467,30 +1467,40 @@
       weeklyData.push({ day: daysOfWeek[d.getDay()], date: d.getDate(), hits, errors, percent });
     }
     
-    let totalHitsWeek = 0, totalErrorsWeek = 0;
-    weeklyData.forEach(d => { totalHitsWeek += d.hits; totalErrorsWeek += d.errors; });
-    const totalWeek = totalHitsWeek + totalErrorsWeek;
-    const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
-    
-    document.getElementById('weeklySummary').innerHTML = `
-      <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
-      <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
-      <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
-    `;
-    
-    const weeklyDaysDiv = document.getElementById('weeklyDays');
-    weeklyDaysDiv.innerHTML = '';
-    weeklyData.forEach(day => {
-      const color = getColorByPercentage(day.percent);
-      const card = document.createElement('div');
-      card.className = 'week-day-card';
-      card.innerHTML = `
-        <div class="week-day-name">${day.day}</div>
-        <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
-        <div style="font-size:9px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
-      `;
-      weeklyDaysDiv.appendChild(card);
-    });
+let totalHitsWeek = 0, totalErrorsWeek = 0;
+weeklyData.forEach(d => { totalHitsWeek += d.hits; totalErrorsWeek += d.errors; });
+const totalWeek = totalHitsWeek + totalErrorsWeek;
+const overallWeekPercent = totalWeek > 0 ? ((totalHitsWeek / totalWeek) * 100).toFixed(1) : 0;
+
+document.getElementById('weeklySummary').innerHTML = `
+  <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
+  <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
+  <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
+`;
+
+const weeklyDaysDiv = document.getElementById('weeklyDays');
+weeklyDaysDiv.innerHTML = '';
+weeklyData.forEach(day => {
+  const color = day.hits + day.errors === 0 ? '#9CA3AF' : getColorByPercentage(day.percent);
+  const card = document.createElement('div');
+  card.className = 'week-day-card';
+  card.innerHTML = `
+    <div class="week-day-name">${day.day}</div>
+    <div class="week-day-percent" style="color:${color}">${day.percent.toFixed(0)}%</div>
+    <div style="font-size:9px; color:var(--muted)">${day.hits}/${day.hits+day.errors}</div>
+  `;
+  weeklyDaysDiv.appendChild(card);
+});
+
+const metaSemanal = 600;
+const faltaMeta = Math.max(0, metaSemanal - totalWeek);
+
+document.getElementById('weeklySummary').innerHTML = `
+  <span><i class="fas fa-check-circle"></i> ${totalHitsWeek}</span>
+  <span><i class="fas fa-times-circle"></i> ${totalErrorsWeek}</span>
+  <span><i class="fas fa-chart-line"></i> ${overallWeekPercent}%</span>
+  <span><i class="fas fa-question-circle"></i> ${totalWeek}/${metaSemanal} (falta ${faltaMeta})</span>
+`;
   }
 
   // ====================== MENU DE CONTEXTO ======================
